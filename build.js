@@ -8,7 +8,7 @@ const POSTS_DIR = path.join(ROOT, 'posts');
 const TPL_DIR = path.join(ROOT, 'templates');
 const STATIC_DIR = path.join(ROOT, 'static');
 const DIST = path.join(ROOT, 'dist');
-const BASE = '/blog';
+const BASE = '';
 
 const read = (p) => fs.readFileSync(p, 'utf8');
 const layout = read(path.join(TPL_DIR, 'layout.html'));

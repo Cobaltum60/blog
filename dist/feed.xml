@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+<title>我的博客</title><link>https://你的GitHub用户名.github.io/Cobaltum60Blog</link><description>个人博客</description>
+<item>
+  <title>你好，世界</title>
+  <link>https://你的GitHub用户名.github.io/Cobaltum60Blog/posts/hello.html</link>
+  <pubDate>Wed, 24 Oct 2001 16:00:00 GMT</pubDate>
+  <description>这是我的第一篇文章。纯手写极简博客。</description>
+</item>
+</channel></rss>

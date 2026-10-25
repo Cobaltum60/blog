@@ -13,7 +13,7 @@ const BASE = '/blog';
 const read = (p) => fs.readFileSync(p, 'utf8');
 const layout = read(path.join(TPL_DIR, 'layout.html'));
 const tplHome = read(path.join(TPL_DIR, 'home.html'));
-const tplPost = read(path.join(TPL_DIR, 'post.html'));
+const tplPost = read(path.join(TPL_DIR, 'posts.html'));
 const tplArchive = read(path.join(TPL_DIR, 'archive.html'));
 
 const render = (tpl, data) =>

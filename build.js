@@ -8,21 +8,17 @@ const POSTS_DIR = path.join(ROOT, 'posts');
 const TPL_DIR = path.join(ROOT, 'templates');
 const STATIC_DIR = path.join(ROOT, 'static');
 const DIST = path.join(ROOT, 'dist');
-const BASE = '/blog'; // GitHub Pages 路径前缀
+const BASE = '/blog';
 
 const read = (p) => fs.readFileSync(p, 'utf8');
 const layout = read(path.join(TPL_DIR, 'layout.html'));
 const tplPost = read(path.join(TPL_DIR, 'post.html'));
 const tplArchive = read(path.join(TPL_DIR, 'archive.html'));
 
-// 简单模板引擎
 const render = (tpl, data) =>
   tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => data[k] ?? '');
 
-function ensureDir(d) {
-  fs.mkdirSync(d, { recursive: true });
-}
-
+function ensureDir(d) { fs.mkdirSync(d, { recursive: true }); }
 function copyDir(src, dest) {
   ensureDir(dest);
   for (const f of fs.readdirSync(src)) {
@@ -40,12 +36,17 @@ const posts = fs.readdirSync(POSTS_DIR)
     const raw = read(path.join(POSTS_DIR, f));
     const { data, content } = matter(raw);
     const slug = f.replace(/\.md$/, '');
+    // 估算阅读时间
+    const wordCount = content.replace(/[\u4e00-\u9fa5]/g, 'aa').length;
+    const readTime = Math.ceil(wordCount / 400);
+    
     return {
       slug,
       title: data.title || slug,
       date: data.date ? String(data.date).slice(0, 10) : '',
       tags: data.tags || [],
       summary: data.summary || '',
+      readTime,
       html: marked(content),
     };
   })
@@ -62,55 +63,79 @@ for (const p of posts) {
   const body = render(tplPost, {
     title: p.title,
     date: p.date,
-    tags: p.tags.map((t) => `<span class="tag">${t}</span>`).join(' '),
+    readTime: p.readTime,
+    tags: p.tags.map((t) => `<span class="tag">#${t}</span>`).join(' '),
     content: p.html,
   });
-  const page = render(layout, { title: `${p.title} · 我的博客`, content: body });
+  const page = render(layout, { title: `${p.title} · Cobaltum60`, content: body });
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 生成优化后的首页列表
+// 4. 生成首页（硬核名片区 + 网格列表）
 const listHtml = posts.map((p) => {
-  // 将 YYYY-MM-DD 转换为 2026 / 10 / 25 格式
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
+  const tagsHtml = p.tags.length > 0 
+    ? `<div class="post-tags">${p.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` 
+    : '';
+  
   return `
-  <article class="post-item">
-    <div class="post-meta">${dateStr}</div>
+  <article class="post-card">
+    <div class="post-card-header">
+      <span class="post-meta">${dateStr}</span>
+      <span class="post-read-time">☕ ${p.readTime} min</span>
+    </div>
     <h2 class="post-title"><a href="${BASE}/posts/${p.slug}.html">${p.title}</a></h2>
     <p class="post-summary">${p.summary}</p>
+    <div class="post-card-footer">
+      ${tagsHtml}
+      <a href="${BASE}/posts/${p.slug}.html" class="read-more">Read &rarr;</a>
+    </div>
   </article>`;
 }).join('\n');
 
 const indexBody = `
-  <div class="site-intro">
-    <h1>最近文章</h1>
-    <p>记录技术与生活。</p>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Cobaltum60</h1>
+      <p>记录技术、生活与思考。不追求华丽的装饰，只保留最纯粹的极简与直角。</p>
+      <div class="hero-socials">
+        <a href="https://github.com/Cobaltum60" target="_blank">GitHub</a>
+        <a href="${BASE}/feed.xml">RSS 订阅</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-title">
+    <h2>LATEST POSTS</h2>
+    <div class="line"></div>
   </div>
-  <div class="post-list">
+
+  <section class="post-grid">
     ${listHtml}
-  </div>
+  </section>
 `;
 fs.writeFileSync(
   path.join(DIST, 'index.html'),
-  render(layout, { title: '我的博客', content: indexBody })
+  render(layout, { title: 'Cobaltum60', content: indexBody })
 );
 
-// 5. 生成归档页（修复了年份显示 Sun 的问题）
+// 5. 生成归档页
 const byYear = {};
 for (const p of posts) {
-  // 使用 Date 对象提取正确的年份
   const y = p.date ? new Date(p.date).getFullYear() : '未知';
   (byYear[y] = byYear[y] || []).push(p);
 }
 const archiveHtml = Object.keys(byYear).sort().reverse().map((y) => `
-  <h2>${y}</h2>
-  <ul>${byYear[y].map((p) =>
-    `<li>${p.date} · <a href="${BASE}/posts/${p.slug}.html">${p.title}</a></li>`
-  ).join('')}</ul>`).join('\n');
+  <div class="archive-year">
+    <h2>${y}</h2>
+    <ul class="archive-list">${byYear[y].map((p) =>
+      `<li><span class="archive-date">${p.date}</span> <a href="${BASE}/posts/${p.slug}.html">${p.title}</a></li>`
+    ).join('')}</ul>
+  </div>`).join('\n');
 fs.writeFileSync(
   path.join(DIST, 'archive.html'),
   render(layout, {
-    title: '归档 · 我的博客',
+    title: '归档 · Cobaltum60',
     content: render(tplArchive, { archive: archiveHtml }),
   })
 );
@@ -119,7 +144,7 @@ fs.writeFileSync(
 const site = 'https://Cobaltum60.github.io/blog';
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
-<title>我的博客</title><link>${site}</link><description>个人博客</description>
+<title>Cobaltum60 Blog</title><link>${site}</link><description>记录技术与生活</description>
 ${posts.map((p) => `<item>
   <title>${p.title}</title>
   <link>${site}/posts/${p.slug}.html</link>

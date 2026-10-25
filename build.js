@@ -8,14 +8,14 @@ const POSTS_DIR = path.join(ROOT, 'posts');
 const TPL_DIR = path.join(ROOT, 'templates');
 const STATIC_DIR = path.join(ROOT, 'static');
 const DIST = path.join(ROOT, 'dist');
-const BASE = '/blog'; // GitHub Pages 项目页路径前缀
+const BASE = '/blog'; // GitHub Pages 路径前缀
 
 const read = (p) => fs.readFileSync(p, 'utf8');
 const layout = read(path.join(TPL_DIR, 'layout.html'));
-const tplIndex = read(path.join(TPL_DIR, 'index.html'));
 const tplPost = read(path.join(TPL_DIR, 'post.html'));
 const tplArchive = read(path.join(TPL_DIR, 'archive.html'));
 
+// 简单模板引擎
 const render = (tpl, data) =>
   tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => data[k] ?? '');
 
@@ -56,7 +56,7 @@ fs.rmSync(DIST, { recursive: true, force: true });
 ensureDir(DIST);
 copyDir(STATIC_DIR, path.join(DIST, 'static'));
 
-// 3. 文章详情页
+// 3. 生成文章详情页
 ensureDir(path.join(DIST, 'posts'));
 for (const p of posts) {
   const body = render(tplPost, {
@@ -69,23 +69,37 @@ for (const p of posts) {
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 首页列表
-const listHtml = posts.map((p) => `
+// 4. 生成优化后的首页列表
+const listHtml = posts.map((p) => {
+  // 将 YYYY-MM-DD 转换为 2026 / 10 / 25 格式
+  const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
+  return `
   <article class="post-item">
-    <h2><a href="${BASE}/posts/${p.slug}.html">${p.title}</a></h2>
-    <p class="post-meta">${p.date}</p>
-    <p>${p.summary}</p>
-  </article>`).join('\n');
-const indexBody = render(tplIndex, { list: listHtml });
+    <div class="post-meta">${dateStr}</div>
+    <h2 class="post-title"><a href="${BASE}/posts/${p.slug}.html">${p.title}</a></h2>
+    <p class="post-summary">${p.summary}</p>
+  </article>`;
+}).join('\n');
+
+const indexBody = `
+  <div class="site-intro">
+    <h1>最近文章</h1>
+    <p>记录技术与生活。</p>
+  </div>
+  <div class="post-list">
+    ${listHtml}
+  </div>
+`;
 fs.writeFileSync(
   path.join(DIST, 'index.html'),
   render(layout, { title: '我的博客', content: indexBody })
 );
 
-// 5. 归档页
+// 5. 生成归档页（修复了年份显示 Sun 的问题）
 const byYear = {};
 for (const p of posts) {
-  const y = p.date.slice(0, 4) || '未知';
+  // 使用 Date 对象提取正确的年份
+  const y = p.date ? new Date(p.date).getFullYear() : '未知';
   (byYear[y] = byYear[y] || []).push(p);
 }
 const archiveHtml = Object.keys(byYear).sort().reverse().map((y) => `
@@ -101,8 +115,8 @@ fs.writeFileSync(
   })
 );
 
-// 6. RSS
-const site = 'https://你的GitHub用户名.github.io/Cobaltum60Blog'; // 记得以后改成你的用户名
+// 6. 生成 RSS
+const site = 'https://Cobaltum60.github.io/blog';
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
 <title>我的博客</title><link>${site}</link><description>个人博客</description>
@@ -115,4 +129,4 @@ ${posts.map((p) => `<item>
 </channel></rss>`;
 fs.writeFileSync(path.join(DIST, 'feed.xml'), rss);
 
-console.log(`构建完成，共 ${posts.length} 篇文章 → dist/`);  
+console.log(`构建完成，共 ${posts.length} 篇文章 → dist/`);

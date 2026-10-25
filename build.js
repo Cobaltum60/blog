@@ -12,6 +12,7 @@ const BASE = '/blog';
 
 const read = (p) => fs.readFileSync(p, 'utf8');
 const layout = read(path.join(TPL_DIR, 'layout.html'));
+const tplHome = read(path.join(TPL_DIR, 'home.html'));
 const tplPost = read(path.join(TPL_DIR, 'post.html'));
 const tplArchive = read(path.join(TPL_DIR, 'archive.html'));
 
@@ -36,7 +37,6 @@ const posts = fs.readdirSync(POSTS_DIR)
     const raw = read(path.join(POSTS_DIR, f));
     const { data, content } = matter(raw);
     const slug = f.replace(/\.md$/, '');
-    // 估算阅读时间
     const wordCount = content.replace(/[\u4e00-\u9fa5]/g, 'aa').length;
     const readTime = Math.ceil(wordCount / 400);
     
@@ -64,62 +64,52 @@ for (const p of posts) {
     title: p.title,
     date: p.date,
     readTime: p.readTime,
-    tags: p.tags.map((t) => `<span class="tag">#${t}</span>`).join(' '),
+    tags: p.tags.map((t) => `<a href="#" class="tag"><i class="fa-solid fa-hashtag"></i> ${t}</a>`).join(' '),
     content: p.html,
   });
-  const page = render(layout, { title: `${p.title} · Cobaltum60`, content: body });
+  const page = render(layout, { title: `${p.title} - Cobaltum60's Blog`, content: body });
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 生成首页（硬核名片区 + 网格列表）
+// 4. 生成文章列表页 (对应导航栏的 Posts)
 const listHtml = posts.map((p) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
-  const tagsHtml = p.tags.length > 0 
-    ? `<div class="post-tags">${p.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>` 
-    : '';
-  
   return `
-  <article class="post-card">
-    <div class="post-card-header">
-      <span class="post-meta">${dateStr}</span>
-      <span class="post-read-time">☕ ${p.readTime} min</span>
+  <article class="list-item">
+    <div class="list-meta">
+      <span class="date"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+      <span class="read-time"><i class="fa-regular fa-clock"></i> ${p.readTime} min</span>
     </div>
-    <h2 class="post-title"><a href="${BASE}/posts/${p.slug}.html">${p.title}</a></h2>
-    <p class="post-summary">${p.summary}</p>
-    <div class="post-card-footer">
-      ${tagsHtml}
-      <a href="${BASE}/posts/${p.slug}.html" class="read-more">Read &rarr;</a>
-    </div>
+    <h2 class="list-title"><a href="${BASE}/posts/${p.slug}.html">${p.title}</a></h2>
+    <p class="list-summary">${p.summary}</p>
+    <a href="${BASE}/posts/${p.slug}.html" class="read-more">阅读全文 <i class="fa-solid fa-arrow-right"></i></a>
   </article>`;
 }).join('\n');
 
-const indexBody = `
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Cobaltum60</h1>
-      <p>记录技术、生活与思考。不追求华丽的装饰，只保留最纯粹的极简与直角。</p>
-      <div class="hero-socials">
-        <a href="https://github.com/Cobaltum60" target="_blank">GitHub</a>
-        <a href="${BASE}/feed.xml">RSS 订阅</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-title">
-    <h2>LATEST POSTS</h2>
-    <div class="line"></div>
+const postsListBody = `
+  <div class="page-header">
+    <h1>Posts</h1>
+    <p>共 ${posts.length} 篇文章，保持记录。</p>
   </div>
-
-  <section class="post-grid">
+  <div class="article-list">
     ${listHtml}
-  </section>
+  </div>
 `;
+// 输出到 dist/posts/index.html
 fs.writeFileSync(
-  path.join(DIST, 'index.html'),
-  render(layout, { title: 'Cobaltum60', content: indexBody })
+  path.join(DIST, 'posts', 'index.html'),
+  render(layout, { title: 'Posts - Cobaltum60\'s Blog', content: postsListBody })
 );
 
-// 5. 生成归档页
+// 5. 生成首页 (Home)
+const homeBody = render(tplHome, { count: posts.length });
+// 输出到 dist/index.html (根目录)
+fs.writeFileSync(
+  path.join(DIST, 'index.html'),
+  render(layout, { title: 'Home - Cobaltum60\'s Blog', content: homeBody })
+);
+
+// 6. 生成归档页（虽然不在导航栏，但保留）
 const byYear = {};
 for (const p of posts) {
   const y = p.date ? new Date(p.date).getFullYear() : '未知';
@@ -135,16 +125,16 @@ const archiveHtml = Object.keys(byYear).sort().reverse().map((y) => `
 fs.writeFileSync(
   path.join(DIST, 'archive.html'),
   render(layout, {
-    title: '归档 · Cobaltum60',
+    title: '归档 - Cobaltum60\'s Blog',
     content: render(tplArchive, { archive: archiveHtml }),
   })
 );
 
-// 6. 生成 RSS
+// 7. 生成 RSS
 const site = 'https://Cobaltum60.github.io/blog';
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
-<title>Cobaltum60 Blog</title><link>${site}</link><description>记录技术与生活</description>
+<title>Cobaltum60's Blog</title><link>${site}</link><description>记录技术与生活</description>
 ${posts.map((p) => `<item>
   <title>${p.title}</title>
   <link>${site}/posts/${p.slug}.html</link>

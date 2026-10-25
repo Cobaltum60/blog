@@ -4,24 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/blog/static/style.css">
 </head>
 <body>
   <header class="site-header">
-    <div class="header-inner">
-      <a href="/blog/" class="site-title">Cobaltum60.</a>
+    <div class="header-container">
+      <a href="/blog/" class="site-brand">Cobaltum60's Blog</a>
       <nav class="site-nav">
-        <a href="/blog/">文章</a>
-        <a href="/blog/archive.html">归档</a>
-        <button id="theme-toggle" aria-label="切换主题">◐</button>
+        <a href="/blog/"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="/blog/posts/"><i class="fa-solid fa-file-lines"></i> Posts</a>
+        <button id="theme-toggle" aria-label="切换主题"><i class="fa-solid fa-moon"></i></button>
       </nav>
     </div>
   </header>
+  
   <main class="site-main">
-    {{content}}
+    <div class="main-container">
+      {{content}}
+    </div>
   </main>
+  
   <footer class="site-footer">
-    <p>© 2026 Cobaltum60. Powered by Pure HTML/CSS/JS.</p>
+    <div class="footer-container">
+      <p>© 2026 Cobaltum60. Built with <i class="fa-solid fa-heart" style="color: var(--primary);"></i> and Pure Code.</p>
+    </div>
   </footer>
   <script src="/blog/static/app.js"></script>
 </body>

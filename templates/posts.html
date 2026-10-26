@@ -4,6 +4,7 @@
     <div class="post-detail-meta">
       <span><i class="fa-regular fa-calendar"></i> {{date}}</span>
       <span><i class="fa-regular fa-clock"></i> {{readTime}} min read</span>
+      <span><i class="fa-solid fa-pen-nib"></i> {{wordCount}} 字</span>
     </div>
     <div class="post-detail-tags">
       {{tags}}
@@ -17,19 +18,27 @@
   <footer class="post-detail-footer">
     <a href="/posts/" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> 返回文章列表</a>
   </footer>
-  <script src="https://giscus.app/client.js"
-        data-repo="Cobaltum60/blog"
-        data-repo-id="R_kgDOVW3agQ"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOVW3agc4DJoYr"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
-        data-lang="zh-CN"
-        crossorigin="anonymous"
-        async>
-</script>
+
+  <!-- 评论区 -->
+  <div class="comments-section" style="margin-top: 64px;">
+    <h3 style="border-bottom: 2px solid var(--fg); padding-bottom: 8px; margin-bottom: 24px; font-size: 1.2rem; font-family: ui-monospace, Menlo, monospace;">
+      <i class="fa-regular fa-comments"></i> Comments
+    </h3>
+    
+    <script src="https://giscus.app/client.js"
+            data-repo="Cobaltum60/blog"
+            data-repo-id="R_kgDOWM3agQ"
+            data-category="Announcements"
+            data-category-id="DIC_kwDOWM3agc4DJoYr"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-theme="preferred_color_scheme"
+            data-lang="zh-CN"
+            crossorigin="anonymous"
+            async>
+    </script>
+  </div>
 </article>

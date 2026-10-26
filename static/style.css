@@ -1,3 +1,8 @@
+/* =========================================
+   Cobaltum60's Blog - 核心样式表
+   主题色: #0F6CBD | 绝对直角 | 无阴影
+========================================= */
+
 :root {
   --bg: #ffffff;
   --fg: #1a1a1a;
@@ -133,7 +138,15 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
   border-bottom: 1px solid var(--border);
 }
 .list-item:hover { background: var(--code-bg); }
-.list-meta { display: flex; gap: 24px; color: var(--muted); font-size: 0.9rem; margin-bottom: 12px; font-family: ui-monospace, Menlo, monospace; }
+.list-meta { 
+  display: flex; 
+  gap: 20px; 
+  flex-wrap: wrap;
+  color: var(--muted); 
+  font-size: 0.9rem; 
+  margin-bottom: 12px; 
+  font-family: ui-monospace, Menlo, monospace; 
+}
 .list-meta i { color: var(--primary); margin-right: 4px; }
 .list-title { font-size: 1.6rem; margin: 0 0 16px 0; }
 .list-title a { color: var(--fg); }
@@ -145,9 +158,18 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
 .post-detail { max-width: 760px; margin: 0 auto; }
 .post-detail-header { text-align: center; margin-bottom: 48px; }
 .post-detail-title { font-size: 2.8rem; letter-spacing: -1px; margin-bottom: 24px; }
-.post-detail-meta { color: var(--muted); display: flex; justify-content: center; gap: 24px; font-family: ui-monospace, Menlo, monospace; font-size: 0.9rem; margin-bottom: 24px; }
+.post-detail-meta { 
+  color: var(--muted); 
+  display: flex; 
+  justify-content: center; 
+  flex-wrap: wrap;
+  gap: 24px; 
+  font-family: ui-monospace, Menlo, monospace; 
+  font-size: 0.9rem; 
+  margin-bottom: 24px; 
+}
 .post-detail-meta i { color: var(--primary); margin-right: 4px; }
-.post-detail-tags { display: flex; justify-content: center; gap: 12px; }
+.post-detail-tags { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
 .tag {
   display: inline-flex;
@@ -186,7 +208,14 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
 .post-detail-content p code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--border); color: var(--primary); }
 .post-detail-content img { max-width: 100%; border: 1px solid var(--border); }
 
-.post-detail-footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); display: flex; justify-content: center; }
+/* 修复了那条多余的线 */
+.post-detail-footer { 
+  margin-top: 64px; 
+  padding-top: 32px; 
+  border-top: 1px solid var(--border); 
+  display: flex; 
+  justify-content: center; 
+}
 
 /* --- 归档页 --- */
 .archive-year { margin-bottom: 40px; }
@@ -205,6 +234,11 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
   margin-top: auto;
 }
 .footer-container { max-width: 1400px; margin: 0 auto; text-align: center; color: var(--muted); font-size: 0.9rem; font-family: ui-monospace, Menlo, monospace; }
+
+/* --- Giscus 评论区极简适配 --- */
+.comments-section iframe {
+  border-radius: 0 !important; /* 强制干掉评论区圆角 */
+}
 
 /* --- 响应式 --- */
 @media (max-width: 768px) {

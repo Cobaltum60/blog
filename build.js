@@ -8,7 +8,7 @@ const POSTS_DIR = path.join(ROOT, 'posts');
 const TPL_DIR = path.join(ROOT, 'templates');
 const STATIC_DIR = path.join(ROOT, 'static');
 const DIST = path.join(ROOT, 'dist');
-const BASE = '';
+const BASE = ''; // 自定义域名使用根目录
 
 const read = (p) => fs.readFileSync(p, 'utf8');
 const layout = read(path.join(TPL_DIR, 'layout.html'));
@@ -37,15 +37,28 @@ const posts = fs.readdirSync(POSTS_DIR)
     const raw = read(path.join(POSTS_DIR, f));
     const { data, content } = matter(raw);
     const slug = f.replace(/\.md$/, '');
-    const wordCount = content.replace(/[\u4e00-\u9fa5]/g, 'aa').length;
+    
+    // 精准字数统计（中文按字，英文按词）
+    const plainText = content.replace(/[#*`>_\-\[\]()]/g, ' ');
+    const zhCount = (plainText.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const enCount = (plainText.match(/[a-zA-Z0-9]+/g) || []).length;
+    const wordCount = zhCount + enCount;
     const readTime = Math.ceil(wordCount / 400);
     
+    // 修复日期（强制转换为 YYYY-MM-DD 格式）
+    let dateStr = '';
+    if (data.date) {
+      const d = new Date(data.date);
+      dateStr = isNaN(d) ? String(data.date) : d.toISOString().slice(0, 10);
+    }
+
     return {
       slug,
       title: data.title || slug,
-      date: data.date ? String(data.date).slice(0, 10) : '',
+      date: dateStr,
       tags: data.tags || [],
       summary: data.summary || '',
+      wordCount,
       readTime,
       html: marked(content),
     };
@@ -63,6 +76,7 @@ for (const p of posts) {
   const body = render(tplPost, {
     title: p.title,
     date: p.date,
+    wordCount: p.wordCount,
     readTime: p.readTime,
     tags: p.tags.map((t) => `<a href="#" class="tag"><i class="fa-solid fa-hashtag"></i> ${t}</a>`).join(' '),
     content: p.html,
@@ -71,7 +85,7 @@ for (const p of posts) {
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 生成文章列表页 (对应导航栏的 Posts)
+// 4. 生成文章列表页 (Posts)
 const listHtml = posts.map((p) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
   return `
@@ -79,6 +93,7 @@ const listHtml = posts.map((p) => {
     <div class="list-meta">
       <span class="date"><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
       <span class="read-time"><i class="fa-regular fa-clock"></i> ${p.readTime} min</span>
+      <span class="word-count"><i class="fa-solid fa-pen-nib"></i> ${p.wordCount} 字</span>
     </div>
     <h2 class="list-title"><a href="${BASE}/posts/${p.slug}.html">${p.title}</a></h2>
     <p class="list-summary">${p.summary}</p>
@@ -95,7 +110,6 @@ const postsListBody = `
     ${listHtml}
   </div>
 `;
-// 输出到 dist/posts/index.html
 fs.writeFileSync(
   path.join(DIST, 'posts', 'index.html'),
   render(layout, { title: 'Posts - Cobaltum60\'s Blog', content: postsListBody })
@@ -103,13 +117,12 @@ fs.writeFileSync(
 
 // 5. 生成首页 (Home)
 const homeBody = render(tplHome, { count: posts.length });
-// 输出到 dist/index.html (根目录)
 fs.writeFileSync(
   path.join(DIST, 'index.html'),
   render(layout, { title: 'Home - Cobaltum60\'s Blog', content: homeBody })
 );
 
-// 6. 生成归档页（虽然不在导航栏，但保留）
+// 6. 生成归档页
 const byYear = {};
 for (const p of posts) {
   const y = p.date ? new Date(p.date).getFullYear() : '未知';
@@ -131,7 +144,7 @@ fs.writeFileSync(
 );
 
 // 7. 生成 RSS
-const site = 'https://Cobaltum60.github.io/blog';
+const site = 'https://blog.cosixzero.com';
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>
 <title>Cobaltum60's Blog</title><link>${site}</link><description>记录技术与生活</description>

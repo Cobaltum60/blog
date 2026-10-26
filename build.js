@@ -13,7 +13,7 @@ const BASE = '';
 const read = (p) => fs.readFileSync(p, 'utf8');
 const layout = read(path.join(TPL_DIR, 'layout.html'));
 const tplHome = read(path.join(TPL_DIR, 'home.html'));
-const tplPost = read(path.join(TPL_DIR, 'posts.html')); // 单篇文章详情
+const tplPost = read(path.join(TPL_DIR, 'posts.html')); 
 const tplArchive = read(path.join(TPL_DIR, 'archive.html'));
 
 const render = (tpl, data) =>
@@ -29,6 +29,9 @@ function copyDir(src, dest) {
     else fs.copyFileSync(s, d);
   }
 }
+
+// 固定分类列表
+const FIXED_CATS = ['随笔', '生活', '编程', '其他'];
 
 // 1. 读取并解析所有文章
 const posts = fs.readdirSync(POSTS_DIR)
@@ -52,12 +55,20 @@ const posts = fs.readdirSync(POSTS_DIR)
       dateStr = isNaN(d) ? String(data.date) : d.toISOString().slice(0, 10);
     }
 
+    // 提取分类逻辑：只认这四个，其他都归为“其他”
+    let cat = '其他';
+    if (data.tags && Array.isArray(data.tags)) {
+      const found = data.tags.find(t => FIXED_CATS.includes(t));
+      if (found) cat = found;
+    }
+
     return {
       slug,
       title: data.title || slug,
       date: dateStr,
       tags: data.tags || [],
       summary: data.summary || '',
+      cat, // 当前文章所属的固定分类
       wordCount,
       readTime,
       html: marked(content),
@@ -69,13 +80,14 @@ const posts = fs.readdirSync(POSTS_DIR)
 fs.rmSync(DIST, { recursive: true, force: true });
 ensureDir(DIST);
 copyDir(STATIC_DIR, path.join(DIST, 'static'));
+copyDir(path.join(ROOT, 'images'), path.join(DIST, 'images'));
 
-// 3. 生成文章详情页（包含上一篇/下一篇导航）
+// 3. 生成文章详情页
 ensureDir(path.join(DIST, 'posts'));
 for (let i = 0; i < posts.length; i++) {
   const p = posts[i];
-  const prev = posts[i - 1]; // 因为前面是按日期降序排的，所以 i-1 是较新的（上一篇）
-  const next = posts[i + 1]; // i+1 是较旧的（下一篇）
+  const prev = posts[i - 1];
+  const next = posts[i + 1];
   
   let postNav = '<nav class="post-nav" aria-label="文章导航">';
   if (prev) {
@@ -112,22 +124,21 @@ for (let i = 0; i < posts.length; i++) {
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 生成文章列表页 (Posts) - 包含侧边栏、搜索、排序
+// 4. 生成文章列表页 (固定四大分类)
 const listHtml = posts.map((p) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
-  const cat = p.tags.length > 0 ? p.tags[0] : '其他';
   return `
   <article class="list-item"
            data-title="${p.title}"
            data-summary="${p.summary}"
-           data-category="${cat}"
+           data-category="${p.cat}"
            data-keywords="${p.tags.join(' ')} ${p.title}"
            data-date="${p.date}">
     <h2 class="list-title"><a href="${BASE}/posts/${p.slug}.html">${p.title}</a></h2>
     <p class="list-summary">${p.summary}</p>
     <div class="list-footer">
       <div class="list-meta">
-        <span class="list-category">${cat}</span>
+        <span class="list-category">${p.cat}</span>
         <span><i class="fa-regular fa-calendar"></i>${dateStr}</span>
         <span><i class="fa-regular fa-clock"></i>${p.readTime} min</span>
         <span><i class="fa-solid fa-pen-nib"></i>${p.wordCount} 字</span>
@@ -137,14 +148,15 @@ const listHtml = posts.map((p) => {
   </article>`;
 }).join('\n');
 
+// 前端脚本：只处理这四个固定分类的过滤和搜索
 const postsScript = `
 <script>
 (function () {
   const FIXED = [
     { key: '全部', icon: 'fa-layer-group' },
     { key: '随笔', icon: 'fa-feather' },
-    { key: '编程', icon: 'fa-code' },
     { key: '生活', icon: 'fa-mug-hot' },
+    { key: '编程', icon: 'fa-code' },
     { key: '其他', icon: 'fa-ellipsis' }
   ];
   const ALL = '全部';
@@ -403,11 +415,9 @@ fs.writeFileSync(
   render(layout, { title: 'Posts - Cobaltum60\'s Blog', content: postsListBody })
 );
 
-// 5. 生成首页 (Home)
 const homeBody = render(tplHome, { count: posts.length });
 fs.writeFileSync(path.join(DIST, 'index.html'), render(layout, { title: 'Home - Cobaltum60\'s Blog', content: homeBody }));
 
-// 6. 生成归档页
 const byYear = {};
 for (const p of posts) {
   const y = p.date ? new Date(p.date).getFullYear() : '未知';
@@ -422,7 +432,6 @@ const archiveHtml = Object.keys(byYear).sort().reverse().map((y) => `
   </div>`).join('\n');
 fs.writeFileSync(path.join(DIST, 'archive.html'), render(layout, { title: '归档 - Cobaltum60\'s Blog', content: render(tplArchive, { archive: archiveHtml }) }));
 
-// 7. 生成 RSS
 const site = 'https://blog.cosixzero.com';
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>

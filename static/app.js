@@ -40,3 +40,40 @@ document.addEventListener('DOMContentLoaded', () => {
     hljs.highlightAll();
   }
 });
+
+// ===== 代码块一键复制功能 =====
+document.addEventListener('DOMContentLoaded', () => {
+  // 找到文章内容里的所有 <pre> 代码块
+  const preBlocks = document.querySelectorAll('.post-detail-content pre');
+
+  preBlocks.forEach((pre) => {
+    // 让 pre 作为定位基准，方便按钮绝对定位
+    pre.style.position = 'relative';
+
+    // 创建复制按钮
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-code-btn';
+    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+    
+    // 将按钮插入到 pre 内部
+    pre.appendChild(copyBtn);
+
+    // 点击事件
+    copyBtn.addEventListener('click', () => {
+      // 获取代码文本（去掉按钮本身的文字）
+      const code = pre.querySelector('code').innerText;
+      
+      // 写入剪贴板
+      navigator.clipboard.writeText(code).then(() => {
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        // 2秒后恢复原状
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+        }, 2000);
+      }).catch(err => {
+        console.error('复制失败:', err);
+        copyBtn.innerText = 'Error';
+      });
+    });
+  });
+});

@@ -265,3 +265,32 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
   .post-detail-title { font-size: 2rem; }
   .site-main { padding: 40px 20px; }
 }
+
+/* --- 一键复制按钮样式 --- */
+.copy-code-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--bg);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-family: ui-monospace, Menlo, monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 0; /* 直角 */
+  box-shadow: none; /* 无阴影 */
+  opacity: 0; /* 默认隐藏 */
+}
+
+/* 鼠标悬浮在代码块上时显示按钮 */
+.post-detail-content pre:hover .copy-code-btn {
+  opacity: 1;
+}
+
+/* 按钮悬浮样式 */
+.copy-code-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}

@@ -311,24 +311,35 @@ mark.hl { background: var(--primary-soft); color: var(--primary); padding: 0 2px
   .back-top { bottom: 20px; right: 20px; }
   .post-detail-content pre { font-size: .82rem; }
 }
+/* --- 侧边栏联系方式 --- */
 .author-mini {
-  align-items: flex-start; /* 让头像和右侧文字顶部对齐 */
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.author-info {
+  flex: 1; 
+  min-width: 0;
 }
 .author-contact {
   margin-top: 8px;
   font-size: 0.78rem;
   line-height: 1.5;
+  width: 100%; 
 }
 .contact-email {
   color: var(--primary);
   font-weight: 600;
   display: flex;
-  align-items: center;
-  gap: 4px;
+  align-items: flex-start; 
+  gap: 6px;
+}
+.contact-email i {
+  margin-top: 3px; 
 }
 .contact-email a {
   color: var(--primary);
-  word-break: break-all; /* 防止邮箱太长撑破侧边栏 */
+  word-break: break-all; 
 }
 .contact-email a:hover {
   text-decoration: underline;
@@ -336,4 +347,5 @@ mark.hl { background: var(--primary-soft); color: var(--primary); padding: 0 2px
 .contact-note {
   color: var(--muted);
   margin-top: 4px;
+  font-size: 0.75rem;
 }

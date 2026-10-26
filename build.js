@@ -337,19 +337,18 @@ const postsListBody = `
         </div>
       </div>
       
-      <!-- 新增：联系我（在分类上方） -->
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-envelope"></i>联系我</div>
         <div class="side-block-body contact-side">
-          <a href="mailto:main@example.com" class="contact-mail">
-            <i class="fa-solid fa-envelope"></i> main@example.com
-          </a>
-          <a href="mailto:backup@example.com" class="contact-mail">
-            <i class="fa-regular fa-envelope"></i> backup@example.com
+          <a href="mailto:feedback@cosixzero.com" class="contact-mail">
+            <i class="fa-solid fa-envelope"></i> feedback@cosixzero.com
+          </a><br>
+          <a href="mailto:electricloud100@outlook.com" class="contact-mail">
+            <i class="fa-solid fa-envelope"></i> electricloud100@outlook.com
           </a>
           <p class="contact-note">
             <i class="fa-solid fa-circle-info"></i>
-            本人不经常查看邮件，回复可能较慢，请耐心等待。
+            本人不经常查看邮件，回复可能较慢
           </p>
         </div>
       </div>

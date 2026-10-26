@@ -3,21 +3,12 @@ const saved = localStorage.getItem(KEY);
 const toggleBtn = document.getElementById('theme-toggle');
 const icon = toggleBtn ? toggleBtn.querySelector('i') : null;
 
+// ===== 主题切换 =====
 function setTheme(theme) {
-  // 1. 切换网站本身的主题
   document.documentElement.dataset.theme = theme;
   localStorage.setItem(KEY, theme);
+  if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
   
-  // 2. 切换图标
-  if (icon) {
-    if (theme === 'dark') {
-      icon.className = 'fa-solid fa-sun';
-    } else {
-      icon.className = 'fa-solid fa-moon';
-    }
-  }
-  
-  // 3. 动态切换 VS Code 高亮主题
   const hljsTheme = document.getElementById('hljs-theme');
   if (hljsTheme) {
     hljsTheme.href = theme === 'dark' 
@@ -25,7 +16,6 @@ function setTheme(theme) {
       : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css';
   }
 
-  // 4. 核心：通知 Giscus 评论区跟随切换
   const giscusFrame = document.querySelector('iframe.giscus-frame');
   if (giscusFrame) {
     giscusFrame.contentWindow.postMessage(
@@ -35,14 +25,8 @@ function setTheme(theme) {
   }
 }
 
-// 初始化主题
-if (saved) {
-  setTheme(saved);
-} else {
-  setTheme('light');
-}
+if (saved) { setTheme(saved); } else { setTheme('light'); }
 
-// 绑定按钮点击事件
 if (toggleBtn) {
   toggleBtn.addEventListener('click', () => {
     const cur = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -50,38 +34,89 @@ if (toggleBtn) {
   });
 }
 
-// ===== 页面加载完成后运行 =====
+// ===== 页面交互功能 =====
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. 初始化代码高亮
-  if (window.hljs) {
-    hljs.highlightAll();
-  }
+  // 1. 代码高亮
+  if (window.hljs) hljs.highlightAll();
 
-  // 2. 代码块一键复制功能
-  const preBlocks = document.querySelectorAll('.post-detail-content pre');
-  preBlocks.forEach((pre) => {
-    pre.style.position = 'relative';
-
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'copy-code-btn';
-    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-    pre.appendChild(copyBtn);
-
-    copyBtn.addEventListener('click', () => {
-      const code = pre.querySelector('code').innerText;
-      navigator.clipboard.writeText(code).then(() => {
-        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+  // 2. 代码复制按钮
+  document.querySelectorAll('.post-detail-content pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-code-btn';
+    btn.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
+    btn.addEventListener('click', async () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.innerText : pre.innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
+        btn.classList.add('copied');
         setTimeout(() => {
-          copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-        }, 2000);
-      }).catch(err => {
-        console.error('复制失败:', err);
-        copyBtn.innerText = 'Error';
-      });
+          btn.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
+          btn.classList.remove('copied');
+        }, 1500);
+      } catch { btn.textContent = '复制失败'; }
     });
+    pre.appendChild(btn);
   });
 
-  // 3. 延迟通知 Giscus 初始化主题（防止 iframe 加载太慢）
+  // 3. TOC 目录 + 进度条 + 锚点
+  const content = document.getElementById('post-content');
+  const tocList = document.getElementById('toc-list');
+  if (content && tocList) {
+    const headings = content.querySelectorAll('h2, h3');
+    if (headings.length > 0) {
+      const usedIds = new Set();
+      headings.forEach((h, i) => {
+        let id = h.id || 'heading-' + i;
+        if (usedIds.has(id)) { id = id + '-' + i; }
+        h.id = id;
+        usedIds.add(id);
+
+        const anchor = document.createElement('a');
+        anchor.className = 'anchor';
+        anchor.href = '#' + id;
+        anchor.textContent = '#';
+        h.appendChild(anchor);
+
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.className = 'toc-link level-' + h.tagName[1];
+        a.href = '#' + id;
+        a.textContent = h.textContent.replace('#', '').trim();
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+
+      const tocLinks = Array.from(tocList.querySelectorAll('.toc-link'));
+      const headingEls = Array.from(headings);
+      const bar = document.getElementById('progress-bar');
+      const backTop = document.getElementById('back-top');
+
+      function updateScroll() {
+        const scrollY = window.scrollY + 100;
+        let activeIndex = -1;
+        headingEls.forEach((h, i) => { if (h.offsetTop <= scrollY) activeIndex = i; });
+        tocLinks.forEach((link, i) => link.classList.toggle('active', i === activeIndex));
+        
+        if (bar) {
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const percent = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+          bar.style.width = Math.min(100, percent) + '%';
+        }
+        if (backTop) backTop.classList.toggle('visible', window.scrollY > 400);
+      }
+
+      window.addEventListener('scroll', updateScroll, { passive: true });
+      updateScroll();
+
+      if (backTop) {
+        backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      }
+    }
+  }
+
+  // 4. 首次加载同步 Giscus 主题
   setTimeout(() => {
     const currentTheme = document.documentElement.dataset.theme;
     const giscusFrame = document.querySelector('iframe.giscus-frame');

@@ -1,44 +1,74 @@
-<article class="post-detail">
-  <header class="post-detail-header">
-    <h1 class="post-detail-title">{{title}}</h1>
-    <div class="post-detail-meta">
-      <span><i class="fa-regular fa-calendar"></i> {{date}}</span>
-      <span><i class="fa-regular fa-clock"></i> {{readTime}} min read</span>
-      <span><i class="fa-solid fa-pen-nib"></i> {{wordCount}} 字</span>
-    </div>
-    <div class="post-detail-tags">
-      {{tags}}
-    </div>
-  </header>
-  
-  <div class="post-detail-content">
-    {{content}}
-  </div>
-  
-  <footer class="post-detail-footer">
-    <a href="/posts/" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> 返回文章列表</a>
-  </footer>
+<div class="progress-bar" id="progress-bar"></div>
 
-  <!-- 评论区 -->
-  <div class="comments-section" style="margin-top: 64px;">
-    <h3 style="border-bottom: 2px solid var(--fg); padding-bottom: 8px; margin-bottom: 24px; font-size: 1.2rem; font-family: ui-monospace, Menlo, monospace;">
-      <i class="fa-regular fa-comments"></i> Comments
-    </h3>
-    
-   <script src="https://giscus.app/client.js"
-        data-repo="Cobaltum60/blog"
-        data-repo-id="R_kgDOVW3agQ"
-        data-category="General"
-        data-category-id="DIC_kwDOVW3agc4DJoYs"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="preferred_color_scheme"
-        data-lang="zh-CN"
-        crossorigin="anonymous"
-        async>
-</script>
+<div class="post-layout">
+  <!-- 左：正文 -->
+  <div>
+    <article class="post-detail">
+      <nav class="breadcrumb" aria-label="面包屑">
+        <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="/posts/">Posts</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span class="current">{{title}}</span>
+      </nav>
+
+      <header class="post-detail-header">
+        <h1 class="post-detail-title">{{title}}</h1>
+        <div class="post-detail-meta">
+          <span><i class="fa-regular fa-calendar"></i> {{date}}</span>
+          <span><i class="fa-regular fa-clock"></i> {{readTime}} min read</span>
+          <span><i class="fa-solid fa-pen-nib"></i> {{wordCount}} 字</span>
+        </div>
+        <div class="post-detail-tags">
+          {{tags}}
+        </div>
+      </header>
+
+      <div class="post-detail-content" id="post-content">
+        {{content}}
+      </div>
+
+      <!-- 上一篇 / 下一篇 (由 build.js 动态注入) -->
+      {{post_nav}}
+
+      <footer class="post-detail-footer">
+        <a href="/posts/" class="btn btn-outline">
+          <i class="fa-solid fa-arrow-left"></i> 返回文章列表
+        </a>
+      </footer>
+
+      <!-- 评论区 -->
+      <section class="comments-section">
+        <h3 class="comments-title">
+          <i class="fa-regular fa-comments"></i> Comments
+        </h3>
+        <script src="https://giscus.app/client.js"
+                data-repo="Cobaltum60/blog"
+                data-repo-id="R_kgDOVW3agQ"
+                data-category="General"
+                data-category-id="DIC_kwDOVW3agc4DJoYs"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="preferred_color_scheme"
+                data-lang="zh-CN"
+                crossorigin="anonymous"
+                async>
+        </script>
+      </section>
+    </article>
   </div>
-</article>
+
+  <!-- 右：TOC -->
+  <aside class="toc" id="toc" aria-label="目录">
+    <div class="toc-head">目录</div>
+    <ul class="toc-list" id="toc-list"></ul>
+  </aside>
+</div>
+
+<!-- 返回顶部 -->
+<button class="back-top" id="back-top" aria-label="返回顶部">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>

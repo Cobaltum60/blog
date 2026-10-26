@@ -116,53 +116,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4. Giscus 折叠懒加载（输入框置顶）
-  const details = document.getElementById('giscus-details');
+  // 4. Giscus 直接加载（输入框置顶）
   const container = document.getElementById('giscus-container');
-  if (details && container) {
-    let giscusLoaded = false;
-    const giscusConfig = {
-      'data-repo': 'Cobaltum60/blog',
-      'data-repo-id': 'R_kgDOVW3agQ', // 替换成你的真实 ID
-      'data-category': 'General',
-      'data-category-id': 'DIC_kwDOVW3agc4DJoYs', // 替换成你的真实 ID
-      'data-mapping': 'pathname',
-      'data-strict': '0',
-      'data-reactions-enabled': '1',
-      'data-emit-metadata': '0',
-      'data-input-position': 'top', // 默认输入框在顶部
-      'data-theme': document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
-      'data-lang': 'zh-CN',
-      'crossorigin': 'anonymous',
-      'async': 'true'
-    };
-
-    function loadGiscus() {
-      if (giscusLoaded) return;
-      giscusLoaded = true;
-      const script = document.createElement('script');
-      script.src = 'https://giscus.app/client.js';
-      Object.entries(giscusConfig).forEach(([key, value]) => {
-        script.setAttribute(key, value);
-      });
-      container.appendChild(script);
-    }
-
-    details.addEventListener('toggle', () => {
-      if (details.open) loadGiscus();
-    });
-
-    // 监听主题变化，同步到 Giscus iframe
-    const observer = new MutationObserver(() => {
-      const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-      const iframe = document.querySelector('iframe.giscus-frame');
-      if (iframe && details.open) {
-        iframe.contentWindow.postMessage(
-          { giscus: { setConfig: { theme } } },
-          'https://giscus.app'
-        );
-      }
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (container) {
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', 'Cobaltum60/blog');
+    script.setAttribute('data-repo-id', 'R_kgDOVW3agQ'); // 你的真实 ID
+    script.setAttribute('data-category', 'General');
+    script.setAttribute('data-category-id', 'DIC_kwDOVW3agc4DJoYs'); // 你的真实 ID
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'top'); // 输入框置顶
+    script.setAttribute('data-theme', document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+    script.setAttribute('data-lang', 'zh-CN');
+    script.setAttribute('crossorigin', 'anonymous');
+    script.setAttribute('async', 'true');
+    container.appendChild(script);
   }
 });

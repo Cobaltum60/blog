@@ -68,7 +68,7 @@ const posts = fs.readdirSync(POSTS_DIR)
       date: dateStr,
       tags: data.tags || [],
       summary: data.summary || '',
-      cat, // 当前文章所属的固定分类
+      cat,
       wordCount,
       readTime,
       html: marked(content),
@@ -124,7 +124,7 @@ for (let i = 0; i < posts.length; i++) {
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 生成文章列表页 (固定四大分类)
+// 4. 生成文章列表页 (修复了 HTML 结构)
 const listHtml = posts.map((p) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
   return `
@@ -336,28 +336,32 @@ const postsListBody = `
     <aside class="sidebar">
       <div class="side-block">
         <div class="side-block-body">
-         <div class="author-mini">
-        <div class="author-avatar">C</div>
-         <div class="author-info">
-          <div class="author-name">Cobaltum60</div>
-          <div class="author-bio">记录代码与生活</div>
-          <div class="author-contact">
-          <div class="contact-email">
-          <i class="fa-solid fa-envelope"></i> 
-          <a href="mailto:你的邮箱@example.com">你的邮箱@example.com</a>
-       </div>
-       <div class="contact-note">
-        * 不经常看邮箱，回复可能较慢。
+          <div class="author-mini">
+            <div class="author-avatar">C</div>
+            <div class="author-info">
+              <div class="author-name">Cobaltum60</div>
+              <div class="author-bio">记录代码与生活</div>
+              <div class="author-contact">
+                <div class="contact-email">
+                  <i class="fa-solid fa-envelope"></i> 
+                  <a href="mailto:你的邮箱@example.com">你的邮箱@example.com</a>
+                </div>
+                <div class="contact-note">
+                  * 不经常看邮箱，回复可能较慢。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
+      
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-folder"></i>分类</div>
         <div class="side-block-body" style="padding: 8px;">
           <ul class="cat-nav" id="cat-nav"></ul>
         </div>
       </div>
+      
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-quote-left"></i>一言</div>
         <div class="side-block-body quote-block">

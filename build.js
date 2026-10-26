@@ -342,7 +342,7 @@ const postsListBody = `
         <div class="side-block-body contact-side">
           <a href="mailto:feedback@cosixzero.com" class="contact-mail">
             <i class="fa-solid fa-envelope"></i> feedback@cosixzero.com
-          </a><br>
+          </a>
           <a href="mailto:electricloud100@outlook.com" class="contact-mail">
             <i class="fa-solid fa-envelope"></i> electricloud100@outlook.com
           </a>

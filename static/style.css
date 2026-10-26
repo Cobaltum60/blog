@@ -93,21 +93,11 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
 /* =========================================
    2. 首页 Home
 ========================================= */
-.about-hero { max-width: 900px; margin: 0 auto 80px; text-align: center; padding: 40px 0; }
+.about-hero { max-width: 900px; margin: 80px auto; text-align: center; padding: 40px 0; }
 .about-hero h1 { font-size: 3.5rem; letter-spacing: -1px; margin-bottom: 24px; }
 .about-hero .highlight { color: var(--primary); }
 .about-hero .lead { font-size: 1.25rem; color: var(--muted); max-width: 700px; margin: 0 auto 40px auto; }
 .about-actions { display: flex; justify-content: center; gap: 16px; }
-
-.about-stats {
-  max-width: 900px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 40px 0;
-}
-.stat-box { text-align: center; border-right: 1px solid var(--border); }
-.stat-box:last-child { border-right: none; }
-.stat-num { font-size: 2.5rem; font-weight: 800; color: var(--primary); font-family: ui-monospace, Menlo, monospace; }
-.stat-label { color: var(--muted); font-weight: 600; margin-top: 8px; }
 
 /* 按钮通用 */
 .btn {
@@ -290,6 +280,9 @@ mark.hl { background: var(--primary-soft); color: var(--primary); padding: 0 2px
 .comments-title i { color: var(--primary); }
 .comments-section iframe, .giscus, .giscus-frame { border-radius: 0 !important; box-shadow: none !important; width: 100% !important; }
 
+/* =========================================
+   5. 响应式
+========================================= */
 @media (max-width: 1100px) {
   .post-layout { grid-template-columns: 1fr; max-width: 760px; }
   .toc { display: none; }
@@ -304,9 +297,6 @@ mark.hl { background: var(--primary-soft); color: var(--primary); padding: 0 2px
   .site-main { padding: 24px 16px 60px; }
   .about-hero h1 { font-size: 2.5rem; }
   .about-actions { flex-direction: column; }
-  .about-stats { grid-template-columns: 1fr; gap: 0; padding: 0; }
-  .stat-box { padding: 24px 0; border-right: none; border-bottom: 1px solid var(--border); }
-  .stat-box:last-child { border-bottom: none; }
   .page-header { flex-direction: column; align-items: flex-start; }
   .sort-select { align-self: stretch; }
   .list-item { padding: 20px 0 20px 16px; }

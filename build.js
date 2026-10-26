@@ -30,10 +30,8 @@ function copyDir(src, dest) {
   }
 }
 
-// 固定分类列表
 const FIXED_CATS = ['随笔', '生活', '编程', '其他'];
 
-// 1. 读取并解析所有文章
 const posts = fs.readdirSync(POSTS_DIR)
   .filter((f) => f.endsWith('.md'))
   .map((f) => {
@@ -41,21 +39,18 @@ const posts = fs.readdirSync(POSTS_DIR)
     const { data, content } = matter(raw);
     const slug = f.replace(/\.md$/, '');
     
-    // 字数统计
     const plainText = content.replace(/[#*`>_\-\[\]()]/g, ' ');
     const zhCount = (plainText.match(/[\u4e00-\u9fa5]/g) || []).length;
     const enCount = (plainText.match(/[a-zA-Z0-9]+/g) || []).length;
     const wordCount = zhCount + enCount;
     const readTime = Math.ceil(wordCount / 400);
     
-    // 日期格式化
     let dateStr = '';
     if (data.date) {
       const d = new Date(data.date);
       dateStr = isNaN(d) ? String(data.date) : d.toISOString().slice(0, 10);
     }
 
-    // 提取分类逻辑：只认这四个，其他都归为“其他”
     let cat = '其他';
     if (data.tags && Array.isArray(data.tags)) {
       const found = data.tags.find(t => FIXED_CATS.includes(t));
@@ -76,13 +71,11 @@ const posts = fs.readdirSync(POSTS_DIR)
   })
   .sort((a, b) => (a.date < b.date ? 1 : -1));
 
-// 2. 清空并重建 dist
 fs.rmSync(DIST, { recursive: true, force: true });
 ensureDir(DIST);
 copyDir(STATIC_DIR, path.join(DIST, 'static'));
 copyDir(path.join(ROOT, 'images'), path.join(DIST, 'images'));
 
-// 3. 生成文章详情页
 ensureDir(path.join(DIST, 'posts'));
 for (let i = 0; i < posts.length; i++) {
   const p = posts[i];
@@ -124,7 +117,6 @@ for (let i = 0; i < posts.length; i++) {
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 生成文章列表页
 const listHtml = posts.map((p) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
   return `
@@ -148,7 +140,6 @@ const listHtml = posts.map((p) => {
   </article>`;
 }).join('\n');
 
-// 前端脚本：只处理这四个固定分类的过滤和搜索
 const postsScript = `
 <script>
 (function () {
@@ -332,36 +323,25 @@ const postsScript = `
 `;
 
 const postsListBody = `
- <div class="author-mini">
-  <div class="author-avatar">C</div>
-  <div class="author-info">
-    <div class="author-name">Cobaltum60</div>
-    <div class="author-bio">记录代码与生活</div>
-  </div>
-  
-  <!-- 挪到外层，和 avatar、info 平级 -->
-  <div class="author-contact">
-   <div class="contact-email">
-      <i class="fa-solid fa-envelope"></i> 
-      <a href="mailto:electricloud100@outlook.com">electricloud100@outlook.com</a>
-    </div>
-    <div class="contact-email">
-      <i class="fa-solid fa-envelope"></i> 
-      <a href="mailto:feedback@cosixzero.com">feedback@cosixzero.com</a>
-    </div>
-    <div class="contact-note">
-      注：本人不经常看邮箱，回复可能较慢
-    </div>
-  </div>
-</div>
-      
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-block">
+        <div class="side-block-body">
+          <div class="author-mini">
+            <div class="author-avatar">C</div>
+            <div class="author-info">
+              <div class="author-name">Cobaltum60</div>
+              <div class="author-bio">记录代码与生活</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-folder"></i>分类</div>
         <div class="side-block-body" style="padding: 8px;">
           <ul class="cat-nav" id="cat-nav"></ul>
         </div>
       </div>
-      
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-quote-left"></i>一言</div>
         <div class="side-block-body quote-block">
@@ -379,7 +359,7 @@ const postsListBody = `
         <div class="page-header">
           <div>
             <h1>Posts</h1>
-            <p>随时记录 · 极简体验</p>
+            <p>保持记录 · 持续输出</p>
           </div>
           <select class="sort-select" id="sort-select" aria-label="排序方式">
             <option value="date-desc">最新优先</option>

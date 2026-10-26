@@ -376,7 +376,7 @@ const postsListBody = `
         <div class="page-header">
           <div>
             <h1>Posts</h1>
-            <p>保持记录 · 持续输出</p>
+            <p>随手记录 · 极简体验</p>
           </div>
           <select class="sort-select" id="sort-select" aria-label="排序方式">
             <option value="date-desc">最新优先</option>

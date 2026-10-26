@@ -113,7 +113,7 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
 /* =========================================
    3. Posts 列表页 (侧边栏 + 搜索)
 ========================================= */
-.layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: start; }
+.layout { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
 .sidebar { position: sticky; top: 96px; display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); background: var(--bg); }
 .side-block { border-bottom: 1px solid var(--border); }
 .side-block:last-child { border-bottom: none; }

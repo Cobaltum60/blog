@@ -4,13 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}}</title>
+  
+  <!-- 引入 FontAwesome 图标库 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- ===== 引入 VS Code 风格代码高亮 ===== -->
+  <!-- 默认使用 VS Code 浅色主题 -->
+  <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css">
+  <!-- 引入 Highlight.js 核心脚本 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+  <!-- 100% 宽度的导航栏 -->
   <header class="site-header">
     <div class="header-container">
-      <a href="/b" class="site-brand">Cobaltum60's Blog</a>
+      <a href="/" class="site-brand">Cobaltum60's Blog</a>
       <nav class="site-nav">
         <a href="/"><i class="fa-solid fa-house"></i> Home</a>
         <a href="/posts/"><i class="fa-solid fa-file-lines"></i> Posts</a>

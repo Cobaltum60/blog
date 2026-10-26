@@ -197,15 +197,28 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--fg); }
   background: var(--code-bg);
   color: var(--muted);
 }
+
+/* VS Code 代码块适配（无圆角、无阴影） */
 .post-detail-content pre {
-  background: var(--code-bg);
   padding: 20px;
   overflow-x: auto;
   border: 1px solid var(--border);
   margin: 32px 0;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
-.post-detail-content code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.9em; }
-.post-detail-content p code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--border); color: var(--primary); }
+.post-detail-content code, 
+.hljs {
+  font-family: ui-monospace, Menlo, Consolas, monospace !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.post-detail-content p code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  color: var(--primary);
+}
 .post-detail-content img { max-width: 100%; border: 1px solid var(--border); }
 
 /* 修复了那条多余的线 */

@@ -11,6 +11,14 @@ function setTheme(theme) {
   } else {
     icon.className = 'fa-solid fa-moon';
   }
+  
+  // 动态切换 VS Code 高亮主题
+  const hljsTheme = document.getElementById('hljs-theme');
+  if (hljsTheme) {
+    hljsTheme.href = theme === 'dark' 
+      ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css' 
+      : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css';
+  }
 }
 
 if (saved) {
@@ -25,3 +33,10 @@ if (toggleBtn) {
     setTheme(cur);
   });
 }
+
+// ===== 代码高亮初始化 =====
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.hljs) {
+    hljs.highlightAll();
+  }
+});

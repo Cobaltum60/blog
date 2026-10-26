@@ -116,15 +116,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4. 首次加载同步 Giscus 主题
-  setTimeout(() => {
-    const currentTheme = document.documentElement.dataset.theme;
-    const giscusFrame = document.querySelector('iframe.giscus-frame');
-    if (giscusFrame && currentTheme) {
-      giscusFrame.contentWindow.postMessage(
-        { giscus: { setConfig: { theme: currentTheme === 'dark' ? 'dark' : 'light' } } },
-        'https://giscus.app'
-      );
+  // 4. Giscus 折叠懒加载（输入框置顶）
+  const details = document.getElementById('giscus-details');
+  const container = document.getElementById('giscus-container');
+  if (details && container) {
+    let giscusLoaded = false;
+    const giscusConfig = {
+      'data-repo': 'Cobaltum60/blog',
+      'data-repo-id': 'R_kgDOVW3agQ', // 替换成你的真实 ID
+      'data-category': 'General',
+      'data-category-id': 'DIC_kwDOVW3agc4DJoYs', // 替换成你的真实 ID
+      'data-mapping': 'pathname',
+      'data-strict': '0',
+      'data-reactions-enabled': '1',
+      'data-emit-metadata': '0',
+      'data-input-position': 'top', // 默认输入框在顶部
+      'data-theme': document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
+      'data-lang': 'zh-CN',
+      'crossorigin': 'anonymous',
+      'async': 'true'
+    };
+
+    function loadGiscus() {
+      if (giscusLoaded) return;
+      giscusLoaded = true;
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      Object.entries(giscusConfig).forEach(([key, value]) => {
+        script.setAttribute(key, value);
+      });
+      container.appendChild(script);
     }
-  }, 1500);
+
+    details.addEventListener('toggle', () => {
+      if (details.open) loadGiscus();
+    });
+
+    // 监听主题变化，同步到 Giscus iframe
+    const observer = new MutationObserver(() => {
+      const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      const iframe = document.querySelector('iframe.giscus-frame');
+      if (iframe && details.open) {
+        iframe.contentWindow.postMessage(
+          { giscus: { setConfig: { theme } } },
+          'https://giscus.app'
+        );
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
 });

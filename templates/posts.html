@@ -37,26 +37,14 @@
         </a>
       </footer>
 
-      <!-- 评论区 -->
+      <!-- 评论区（折叠懒加载） -->
       <section class="comments-section">
-        <h3 class="comments-title">
-          <i class="fa-regular fa-comments"></i> Comments
-        </h3>
-        <script src="https://giscus.app/client.js"
-                data-repo="Cobaltum60/blog"
-                data-repo-id="R_kgDOVW3agQ"
-                data-category="General"
-                data-category-id="DIC_kwDOVW3agc4DJoYs"
-                data-mapping="pathname"
-                data-strict="0"
-                data-reactions-enabled="1"
-                data-emit-metadata="0"
-                data-input-position="bottom"
-                data-theme="preferred_color_scheme"
-                data-lang="zh-CN"
-                crossorigin="anonymous"
-                async>
-        </script>
+        <details id="giscus-details" class="giscus-details">
+          <summary class="giscus-summary">
+            <i class="fa-regular fa-comments"></i> 参与讨论 / 查看评论
+          </summary>
+          <div id="giscus-container" class="giscus-container"></div>
+        </details>
       </section>
     </article>
   </div>

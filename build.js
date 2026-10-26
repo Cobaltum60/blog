@@ -124,7 +124,7 @@ for (let i = 0; i < posts.length; i++) {
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
-// 4. 生成文章列表页 (修复了 HTML 结构)
+// 4. 生成文章列表页
 const listHtml = posts.map((p) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
   return `
@@ -332,28 +332,28 @@ const postsScript = `
 `;
 
 const postsListBody = `
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="side-block">
-        <div class="side-block-body">
-          <div class="author-mini">
-            <div class="author-avatar">C</div>
-            <div class="author-info">
-              <div class="author-name">Cobaltum60</div>
-              <div class="author-bio">记录代码与生活</div>
-              <div class="author-contact">
-                <div class="contact-email">
-                  <i class="fa-solid fa-envelope"></i> 
-                  <a href="mailto:你的邮箱@example.com">你的邮箱@example.com</a>
-                </div>
-                <div class="contact-note">
-                  * 不经常看邮箱，回复可能较慢。
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+ <div class="author-mini">
+  <div class="author-avatar">C</div>
+  <div class="author-info">
+    <div class="author-name">Cobaltum60</div>
+    <div class="author-bio">记录代码与生活</div>
+  </div>
+  
+  <!-- 挪到外层，和 avatar、info 平级 -->
+  <div class="author-contact">
+   <div class="contact-email">
+      <i class="fa-solid fa-envelope"></i> 
+      <a href="mailto:electricloud100@outlook.com">electricloud100@outlook.com</a>
+    </div>
+    <div class="contact-email">
+      <i class="fa-solid fa-envelope"></i> 
+      <a href="mailto:feedback@cosixzero.com">feedback@cosixzero.com</a>
+    </div>
+    <div class="contact-note">
+      注：本人不经常看邮箱，回复可能较慢
+    </div>
+  </div>
+</div>
       
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-folder"></i>分类</div>
@@ -379,7 +379,7 @@ const postsListBody = `
         <div class="page-header">
           <div>
             <h1>Posts</h1>
-            <p>保持记录 · 持续输出</p>
+            <p>随时记录 · 极简体验</p>
           </div>
           <select class="sort-select" id="sort-select" aria-label="排序方式">
             <option value="date-desc">最新优先</option>

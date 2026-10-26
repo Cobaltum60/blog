@@ -311,3 +311,29 @@ mark.hl { background: var(--primary-soft); color: var(--primary); padding: 0 2px
   .back-top { bottom: 20px; right: 20px; }
   .post-detail-content pre { font-size: .82rem; }
 }
+.author-mini {
+  align-items: flex-start; /* 让头像和右侧文字顶部对齐 */
+}
+.author-contact {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.contact-email {
+  color: var(--primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.contact-email a {
+  color: var(--primary);
+  word-break: break-all; /* 防止邮箱太长撑破侧边栏 */
+}
+.contact-email a:hover {
+  text-decoration: underline;
+}
+.contact-note {
+  color: var(--muted);
+  margin-top: 4px;
+}

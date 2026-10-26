@@ -336,15 +336,22 @@ const postsListBody = `
     <aside class="sidebar">
       <div class="side-block">
         <div class="side-block-body">
-          <div class="author-mini">
-            <div class="author-avatar">C</div>
-            <div class="author-info">
-              <div class="author-name">Cobaltum60</div>
-              <div class="author-bio">记录代码与生活</div>
-            </div>
-          </div>
-        </div>
+         <div class="author-mini">
+        <div class="author-avatar">C</div>
+         <div class="author-info">
+          <div class="author-name">Cobaltum60</div>
+          <div class="author-bio">记录代码与生活</div>
+          <div class="author-contact">
+          <div class="contact-email">
+          <i class="fa-solid fa-envelope"></i> 
+          <a href="mailto:你的邮箱@example.com">你的邮箱@example.com</a>
+       </div>
+       <div class="contact-note">
+        * 不经常看邮箱，回复可能较慢。
       </div>
+    </div>
+  </div>
+</div>
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-folder"></i>分类</div>
         <div class="side-block-body" style="padding: 8px;">

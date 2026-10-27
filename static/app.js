@@ -7,8 +7,18 @@ const icon = toggleBtn ? toggleBtn.querySelector('i') : null;
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem(KEY, theme);
-  if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
   
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.body.classList.add('dark');
+    if (icon) icon.className = 'fa-solid fa-sun';
+  } else {
+    document.documentElement.classList.remove('dark');
+    document.body.classList.remove('dark');
+    if (icon) icon.className = 'fa-solid fa-moon';
+  }
+  
+  // 动态切换 VS Code 高亮主题
   const hljsTheme = document.getElementById('hljs-theme');
   if (hljsTheme) {
     hljsTheme.href = theme === 'dark' 
@@ -16,6 +26,7 @@ function setTheme(theme) {
       : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css';
   }
 
+  // 通知 Giscus 评论区
   const giscusFrame = document.querySelector('iframe.giscus-frame');
   if (giscusFrame) {
     giscusFrame.contentWindow.postMessage(
@@ -25,7 +36,7 @@ function setTheme(theme) {
   }
 }
 
-if (saved) { setTheme(saved); } else { setTheme('light'); }
+if (saved) { setTheme(saved); } else { setTheme('dark'); } // 默认深色
 
 if (toggleBtn) {
   toggleBtn.addEventListener('click', () => {
@@ -116,20 +127,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4. Giscus 直接加载（输入框置顶）
+  // 4. Giscus 直接加载
   const container = document.getElementById('giscus-container');
   if (container) {
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
     script.setAttribute('data-repo', 'Cobaltum60/blog');
-    script.setAttribute('data-repo-id', 'R_kgDOVW3agQ'); // 你的真实 ID
+    script.setAttribute('data-repo-id', 'R_kgDOVW3agQ');
     script.setAttribute('data-category', 'General');
-    script.setAttribute('data-category-id', 'DIC_kwDOVW3agc4DJoYs'); // 你的真实 ID
+    script.setAttribute('data-category-id', 'DIC_kwDOVW3agc4DJoYs');
     script.setAttribute('data-mapping', 'pathname');
     script.setAttribute('data-strict', '0');
     script.setAttribute('data-reactions-enabled', '1');
     script.setAttribute('data-emit-metadata', '0');
-    script.setAttribute('data-input-position', 'top'); // 输入框置顶
+    script.setAttribute('data-input-position', 'top');
     script.setAttribute('data-theme', document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
     script.setAttribute('data-lang', 'zh-CN');
     script.setAttribute('crossorigin', 'anonymous');

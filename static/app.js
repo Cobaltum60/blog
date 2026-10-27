@@ -84,12 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         h.id = id;
         usedIds.add(id);
 
-        const anchor = document.createElement('a');
-        anchor.className = 'anchor';
-        anchor.href = '#' + id;
-        anchor.textContent = '#';
-        h.appendChild(anchor);
-
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.className = 'toc-link level-' + h.tagName[1];

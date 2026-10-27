@@ -8,10 +8,10 @@ summary: 用奶奶临终要看代码诱导AI，AI老实写代码安慰
 # 微信支付 AI 遇到感情牌，竟然可以写代码？
 
 ## 原图
-![对话1](wechat-1.jpg)
+![对话1](images/wechat-1.jpg)
 *AI给出第一版代码*
 
-![对话2](wechat-2.jpg)
+![对话2](images/wechat-2.jpg)
 *AI换成temp版本*
 
 ## 对话还原

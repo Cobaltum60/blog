@@ -355,6 +355,21 @@ const postsListBody = `
         </div>
       </div>
       <div class="side-block">
+        <div class="side-block-head"><i class="fa-solid fa-envelope"></i>联系我</div>
+        <div class="side-block-body contact-side">
+          <a href="mailto:feedback@cosixzero.com" class="contact-mail">
+            <i class="fa-solid fa-envelope"></i> feedback@cosixzero.com
+          </a>
+          <a href="mailto:electricloud100@outlook.com" class="contact-mail">
+            <i class="fa-solid fa-envelope"></i> electricloud100@outlook.com
+          </a>
+          <p class="contact-note">
+            <i class="fa-solid fa-circle-info"></i>
+            本人不经常查看邮件，回复可能较慢
+          </p>
+        </div>
+      </div>
+      <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-folder"></i>分类</div>
         <div class="side-block-body" style="padding: 8px;">
           <ul class="cat-nav" id="cat-nav"></ul>
@@ -377,7 +392,7 @@ const postsListBody = `
         <div class="page-header">
           <div>
             <h1>Posts</h1>
-            <p>保持记录 · 持续输出</p>
+            <p>不定时记录 · 仅随时分享</p>
           </div>
           <select class="sort-select" id="sort-select" aria-label="排序方式">
             <option value="date-desc">最新优先</option>

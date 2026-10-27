@@ -417,3 +417,19 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
   .home-bottom { padding: 1.4rem 1.5rem; }
   .home-info { grid-template-columns: 1fr; gap: 1.2rem; }
 }
+
+/* --- 侧边栏联系方式 --- */
+.contact-side { display: flex; flex-direction: column; gap: 0.6rem; }
+.contact-mail {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--text-muted);
+  text-decoration: none; word-break: break-all;
+  transition: var(--transition);
+}
+.contact-mail i { color: var(--primary); flex-shrink: 0; font-size: 0.75rem; }
+.contact-mail:hover { color: var(--primary); }
+.contact-note {
+  display: flex; gap: 0.4rem;
+  font-size: 0.72rem; color: var(--text-muted);
+  margin-top: 0.2rem; line-height: 1.4; opacity: 0.8;
+}

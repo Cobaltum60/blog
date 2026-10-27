@@ -19,6 +19,13 @@ const tplArchive = read(path.join(TPL_DIR, 'archive.html'));
 const render = (tpl, data) =>
   tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => data[k] ?? '');
 
+const escapeHTML = (str) => {
+  if (!str) return '';
+  return String(str).replace(/[&<>'"]/g, 
+    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])
+  );
+};
+
 function ensureDir(d) { fs.mkdirSync(d, { recursive: true }); }
 function copyDir(src, dest) {
   ensureDir(dest);
@@ -57,25 +64,33 @@ const posts = fs.readdirSync(POSTS_DIR)
       if (found) cat = found;
     }
 
+    let safeHtml = marked(content);
+    safeHtml = safeHtml.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+
     return {
       slug,
-      title: data.title || slug,
+      title: escapeHTML(data.title || slug),
       date: dateStr,
-      tags: data.tags || [],
-      summary: data.summary || '',
-      cat,
+      tags: (data.tags || []).map(t => escapeHTML(t)),
+      summary: escapeHTML(data.summary || ''),
+      cat: escapeHTML(cat),
       wordCount,
       readTime,
-      html: marked(content),
+      html: safeHtml,
     };
   })
   .sort((a, b) => (a.date < b.date ? 1 : -1));
 
+if (path.basename(DIST) !== 'dist') {
+  console.error('⚠️ 警告：目标目录不是 dist，已停止清理！');
+  process.exit(1);
+}
 fs.rmSync(DIST, { recursive: true, force: true });
 ensureDir(DIST);
 copyDir(STATIC_DIR, path.join(DIST, 'static'));
 copyDir(path.join(ROOT, 'images'), path.join(DIST, 'images'));
 
+// 3. 生成文章详情页
 ensureDir(path.join(DIST, 'posts'));
 for (let i = 0; i < posts.length; i++) {
   const p = posts[i];
@@ -117,6 +132,7 @@ for (let i = 0; i < posts.length; i++) {
   fs.writeFileSync(path.join(DIST, 'posts', `${p.slug}.html`), page);
 }
 
+// 4. 生成文章列表页
 const listHtml = posts.map((p) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
   return `
@@ -253,9 +269,11 @@ const postsScript = `
       s.innerHTML = highlight(item.summary, tokens);
     });
     const visible = results.length;
-    emptyEl.classList.toggle('visible', visible === 0);
+    const totalToShow = tokens.length > 0 ? visible : items.filter(it => activeCategory === ALL || it.category === activeCategory).length;
+    
+    emptyEl.classList.toggle('visible', totalToShow === 0);
     resetLink.style.display = (activeCategory !== ALL || tokens.length) ? 'inline-flex' : 'none';
-    let html = \`<span>共 \${visible} 篇文章</span>\`;
+    let html = \`<span>共 \${totalToShow} 篇文章</span>\`;
     if (activeCategory !== ALL) html += \`<span class="result-chip">\${activeCategory}</span>\`;
     if (tokens.length) html += \`<span class="result-chip"><i class="fa-solid fa-magnifying-glass" style="font-size:.65rem"></i>\${keyword.trim()}</span>\`;
     infoEl.innerHTML = html;
@@ -266,7 +284,7 @@ const postsScript = `
     if (!kw) { suggestEl.classList.remove('visible'); suggestEl.innerHTML = ''; suggestIndex = -1; return; }
     const tokens = tokenize(keyword);
     const candidates = items.map(it => ({ it, score: scoreItem(it, tokens) })).filter(x => x.score > 0 && x.it.title.toLowerCase().includes(tokens[0])).sort((a, b) => b.score - a.score).slice(0, 5);
-    if (candidates.length === 0) { suggestEl.innerHTML = \`<div class="suggest-item" style="justify-content:center;color:var(--muted);cursor:default;">没有匹配的文章</div>\`; suggestEl.classList.add('visible'); suggestIndex = -1; return; }
+    if (candidates.length === 0) { suggestEl.innerHTML = \`<div class="suggest-item" style="justify-content:center;color:var(--text-muted);cursor:default;">没有匹配的文章</div>\`; suggestEl.classList.add('visible'); suggestIndex = -1; return; }
     suggestEl.innerHTML = candidates.map(({ it }) => \`<div class="suggest-item" data-index="\${items.indexOf(it)}" role="option"><i class="fa-solid fa-file-lines"></i><span class="suggest-text">\${highlight(it.title, tokens)}</span><span class="suggest-cat">\${it.category}</span></div>\`).join('');
     suggestEl.classList.add('visible');
     suggestIndex = -1;
@@ -336,23 +354,6 @@ const postsListBody = `
           </div>
         </div>
       </div>
-      
-      <div class="side-block">
-        <div class="side-block-head"><i class="fa-solid fa-envelope"></i>联系我</div>
-        <div class="side-block-body contact-side">
-          <a href="mailto:feedback@cosixzero.com" class="contact-mail">
-            <i class="fa-solid fa-envelope"></i> feedback@cosixzero.com
-          </a>
-          <a href="mailto:electricloud100@outlook.com" class="contact-mail">
-            <i class="fa-solid fa-envelope"></i> electricloud100@outlook.com
-          </a>
-          <p class="contact-note">
-            <i class="fa-solid fa-circle-info"></i>
-            本人不经常查看邮件，回复可能较慢
-          </p>
-        </div>
-      </div>
-      
       <div class="side-block">
         <div class="side-block-head"><i class="fa-solid fa-folder"></i>分类</div>
         <div class="side-block-body" style="padding: 8px;">
@@ -376,7 +377,7 @@ const postsListBody = `
         <div class="page-header">
           <div>
             <h1>Posts</h1>
-            <p>随手记录 · 极简体验</p>
+            <p>保持记录 · 持续输出</p>
           </div>
           <select class="sort-select" id="sort-select" aria-label="排序方式">
             <option value="date-desc">最新优先</option>
@@ -423,23 +424,11 @@ fs.writeFileSync(
   render(layout, { title: 'Posts - Cobaltum60\'s Blog', content: postsListBody })
 );
 
+// 5. 生成首页
 const homeBody = render(tplHome, { count: posts.length });
 fs.writeFileSync(path.join(DIST, 'index.html'), render(layout, { title: 'Home - Cobaltum60\'s Blog', content: homeBody }));
 
-const byYear = {};
-for (const p of posts) {
-  const y = p.date ? new Date(p.date).getFullYear() : '未知';
-  (byYear[y] = byYear[y] || []).push(p);
-}
-const archiveHtml = Object.keys(byYear).sort().reverse().map((y) => `
-  <div class="archive-year">
-    <h2>${y}</h2>
-    <ul class="archive-list">${byYear[y].map((p) =>
-      `<li><span class="archive-date">${p.date}</span> <a href="${BASE}/posts/${p.slug}.html">${p.title}</a></li>`
-    ).join('')}</ul>
-  </div>`).join('\n');
-fs.writeFileSync(path.join(DIST, 'archive.html'), render(layout, { title: '归档 - Cobaltum60\'s Blog', content: render(tplArchive, { archive: archiveHtml }) }));
-
+// 6. 生成 RSS
 const site = 'https://blog.cosixzero.com';
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"><channel>

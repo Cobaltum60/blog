@@ -3,7 +3,7 @@
 <div class="post-layout">
   <!-- 左：正文 -->
   <div>
-    <article class="post-detail">
+    <article class="post-detail glass-card">
       <nav class="breadcrumb" aria-label="面包屑">
         <a href="/"><i class="fa-solid fa-house"></i> Home</a>
         <i class="fa-solid fa-chevron-right"></i>
@@ -28,7 +28,7 @@
         {{content}}
       </div>
 
-      <!-- 上一篇 / 下一篇 (由 build.js 动态注入) -->
+      <!-- 上一篇 / 下一篇 -->
       {{post_nav}}
 
       <footer class="post-detail-footer">
@@ -37,7 +37,7 @@
         </a>
       </footer>
 
-      <!-- 评论区（直接展示，输入框在上） -->
+      <!-- 评论区 -->
       <section class="comments-section">
         <h3 class="comments-title">
           <i class="fa-regular fa-comments"></i> Comments
@@ -48,7 +48,7 @@
   </div>
 
   <!-- 右：TOC -->
-  <aside class="toc" id="toc" aria-label="目录">
+  <aside class="toc glass-card" id="toc" aria-label="目录">
     <div class="toc-head">目录</div>
     <ul class="toc-list" id="toc-list"></ul>
   </aside>

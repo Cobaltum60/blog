@@ -1,9 +1,65 @@
-<div class="about-hero">
-  <h1>Hello, I'm <span class="highlight">Cobaltum60</span>.</h1>
-  <p class="lead">记录技术、生活与思考。这里是我的数字花园，不追求华丽的装饰，只保留最纯粹的极简、直角与代码。</p>
-  <div class="about-actions">
-    <a href="/posts/" class="btn"><i class="fa-solid fa-book-open"></i> 阅读文章</a>
-    <a href="https://github.com/Cobaltum60" target="_blank" class="btn btn-outline"><i class="fa-brands fa-github"></i> GitHub</a>
-    <a href="/feed.xml" class="btn btn-outline"><i class="fa-solid fa-rss"></i> RSS</a>
-  </div>
+<div class="home-wrapper">
+  <!-- 上方块：欢迎 + 入口 -->
+  <section class="home-top">
+    <h1>Hello, I'm <span class="highlight">Cobaltum60</span>.</h1>
+    <p class="lead">
+      这是我的数字花园——记录技术、生活与思考。这里不做花哨的展示，只保留一个安静的入口。
+    </p>
+    <div class="home-actions">
+      <a href="/posts/" class="btn"><i class="fa-solid fa-file-lines"></i> 浏览文章</a>
+      <a href="https://github.com/Cobaltum60" target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="fa-brands fa-github"></i> GitHub</a>
+      <a href="/feed.xml" class="btn btn-outline"><i class="fa-solid fa-rss"></i> RSS</a>
+    </div>
+  </section>
+
+  <!-- 下方块：信息区 + 推荐阅读 -->
+  <section class="home-bottom">
+    <!-- 信息区 -->
+    <div class="home-info">
+      <div class="info-block">
+        <span class="info-label"><i class="fa-solid fa-seedling"></i> 数字花园</span>
+        <p>这里的文章会随着我的学习不断被修剪、更新。有些想法可能只是半成品，但这正是生长的痕迹。</p>
+      </div>
+      <div class="info-block">
+        <span class="info-label"><i class="fa-solid fa-code"></i> 技术栈</span>
+        <p>原生 HTML、CSS 与少量 JavaScript 手工构建，无框架、无构建流程，使用 Highlight.js 与 FontAwesome。</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 推荐阅读 -->
+    <div class="recommend-head">
+      <span class="section-title"><i class="fa-solid fa-star"></i> 推荐阅读</span>
+    </div>
+
+    <div class="recommend-list">
+      <a href="/posts/c-switch.html" class="recommend-item">
+        <span class="ri-index">01</span>
+        <span class="ri-body">
+          <span class="ri-title">C 语言 switch 语句的基础与深度剖析</span>
+          <span class="ri-meta">
+            <span><i class="fa-regular fa-calendar"></i> 2026-10-26</span>
+            <span><i class="fa-regular fa-clock"></i> 3 分钟</span>
+            <span><i class="fa-solid fa-tag"></i> 编程</span>
+          </span>
+        </span>
+      </a>
+      <a href="/posts/hello.html" class="recommend-item">
+        <span class="ri-index">02</span>
+        <span class="ri-body">
+          <span class="ri-title">你好，世界</span>
+          <span class="ri-meta">
+            <span><i class="fa-regular fa-calendar"></i> 2026-10-25</span>
+            <span><i class="fa-regular fa-clock"></i> 1 分钟</span>
+            <span><i class="fa-solid fa-tag"></i> 随笔</span>
+          </span>
+        </span>
+      </a>
+    </div>
+
+    <div class="read-all-wrap">
+      <a href="/posts/" class="read-all">阅读全部文章 <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
 </div>

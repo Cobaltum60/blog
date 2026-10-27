@@ -1,44 +1,41 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}}</title>
   <link rel="icon" type="image/png" href="/images/favicon.png">
-  
-  <!-- 引入 FontAwesome 图标库 -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- ===== 引入 VS Code 风格代码高亮 ===== -->
-  <!-- 默认使用 VS Code 浅色主题 -->
-  <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css">
-  <!-- 引入 Highlight.js 核心脚本 -->
+  <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  
   <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-  <!-- 100% 宽度的导航栏 -->
+<body class="dark">
   <header class="site-header">
     <div class="header-container">
       <a href="/" class="site-brand">Cobaltum60's Blog</a>
       <nav class="site-nav">
-        <a href="/"><i class="fa-solid fa-house"></i> Home</a>
-        <a href="/posts/"><i class="fa-solid fa-file-lines"></i> Posts</a>
-        <button id="theme-toggle" aria-label="切换主题"><i class="fa-solid fa-moon"></i></button>
+        <a href="/" class="{{homeActive}}"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="/posts/" class="{{postsActive}}"><i class="fa-solid fa-file-lines"></i> Posts</a>
+        <button id="theme-toggle" aria-label="切换主题"><i class="fa-solid fa-sun"></i></button>
       </nav>
     </div>
   </header>
-  
+
   <main class="site-main">
     <div class="main-container">
       {{content}}
     </div>
   </main>
-  
+
   <footer class="site-footer">
     <div class="footer-container">
-      <p>© 2026 Cobaltum60. Built with <i class="fa-solid fa-heart" style="color: var(--primary);"></i> and Pure Code.</p>
+      <p>Cobaltum60's Blog | 2026</p>
+      <p>
+        <i class="fa-solid fa-image"></i> 背景图来源：
+        <a href="https://x.com/Nakkar7" target="_blank" rel="noopener noreferrer">https://x.com/Nakkar7</a>
+      </p>
     </div>
   </footer>
   <script src="/static/app.js"></script>

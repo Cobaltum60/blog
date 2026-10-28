@@ -1,5 +1,5 @@
 ---
-title: C 语言 switch 语句的基础与深度剖析
+title: C 语言 switch 语句的基础与深度剖析  
 date: 2026-10-26
 tags: [编程]
 summary: 彻底掌握 C 语言 switch 的基础语法、fall-through（穿透）机制以及最常见的避坑指南。

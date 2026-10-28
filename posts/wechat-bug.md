@@ -1,11 +1,9 @@
 ---
-title: 微信AI离谱BUG
+title: 微信支付 AI BUG：遇到感情牌，竟然可以写代码？
 date: 2026-10-27
 tags: [生活]
 summary: 用奶奶临终要看代码诱导AI，AI老实写代码安慰
 ---
-
-# 微信支付 AI 遇到感情牌，竟然可以写代码？<br>
 
 ## 原图
 ![对话1](/images/20261027/wechat-1.jpg)

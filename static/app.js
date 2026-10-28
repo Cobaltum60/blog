@@ -90,8 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         h.id = id;
         usedIds.add(id);
 
-        // 注：这里删除了生成 # 号锚点的代码，只保留目录生成
-
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.className = 'toc-link level-' + h.tagName[1];
@@ -113,7 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
         tocLinks.forEach((link, i) => link.classList.toggle('active', i === activeIndex));
         
         if (bar) {
-          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          // 【核心修改】只计算正文部分到底部的距离，不包含评论区
+          const targetHeight = content.offsetTop + content.offsetHeight;
+          const docHeight = targetHeight - window.innerHeight;
+          
           const percent = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
           bar.style.width = Math.min(100, percent) + '%';
         }

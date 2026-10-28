@@ -41,6 +41,7 @@ body {
   flex-direction: column;
   line-height: 1.6;
   position: relative;
+  isolation: isolate;
   background-image: url('/images/background.jpg');
   background-size: cover;
   background-position: center;
@@ -278,13 +279,13 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .tag:hover { background: var(--primary); color: #fff; }
 
 /* 核心修复：强制文字换行 */
-.post-detail-content { 
-  font-size: 1.05rem; 
-  line-height: 1.85; 
-  color: var(--text-dark); 
-  word-wrap: break-word; 
-  overflow-wrap: break-word; 
-  word-break: break-word; 
+.post-detail-content {
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--text-dark);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
   min-width: 0;
 }
 .post-detail-content h2, .post-detail-content h3 { color: var(--text-dark); border-bottom-color: var(--glass-border); }
@@ -296,7 +297,7 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .post-detail-content pre {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  padding: 44px 20px 20px; 
+  padding: 44px 20px 20px;
   overflow-x: auto;
   max-width: 100%;
   margin: 24px 0;
@@ -332,6 +333,7 @@ body.dark .post-detail-content pre {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.6;
+  padding-right: 64px; /* 给复制按钮让位，避免悬停时重叠 */
 }
 .post-detail-content code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
 .post-detail-content p code, .post-detail-content li code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--glass-border); color: var(--primary); border-radius: var(--radius-sm); }
@@ -388,18 +390,12 @@ body.dark .post-detail-content pre {
   .sidebar .side-block { flex: 1 1 240px; }
 }
 @media (max-width: 768px) {
-  .header-container { padding: 0.7rem 1rem; flex-direction: column; height: auto; }
-  .site-nav { width: 100%; justify-content: center; }
-  .site-main { padding: 1.4rem 1rem 2rem; }
-  
-  /* 确保容器绝对不超出屏幕宽度 */
   .post-detail, .toc { padding: 1.5rem 1.2rem; width: 100%; max-width: 100vw; }
   .post-detail-title { font-size: 1.7rem; }
-  
-  /* 双重保险，强制所有长串文本打断换行 */
+
   .post-detail-content * {
-    max-width: 100vw; 
-    word-wrap: break-word; 
+    max-width: 100vw;
+    word-wrap: break-word;
     word-break: break-word;
   }
   .post-detail-content pre {
@@ -417,4 +413,158 @@ body.dark .post-detail-content pre {
   .home-top { padding: 1.9rem 1.5rem; }
   .home-top h1 { font-size: 2rem; }
   .home-bottom { padding: 1.4rem 1.5rem; }
+}
+
+/* =========================================
+   移动端布局修复
+   修复代码块撑宽页面、导航栏异常间隙
+========================================= */
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;  /* 旧浏览器兜底 */
+    overflow-x: clip;    /* 现代浏览器：不建立滚动容器，不破坏 sticky */
+  }
+
+  /* 防止导航栏和主内容被页面最小宽度撑开 */
+  .site-header,
+  .header-container,
+  .site-nav,
+  .site-main,
+  .main-container,
+  .post-layout,
+  .post-detail,
+  .post-detail-content {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .header-container {
+    width: 100%;
+  }
+
+  .site-nav {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .site-main {
+    width: 100%;
+  }
+
+  /* Grid 列必须允许收缩 */
+  .post-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .post-detail {
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* 正文中的普通文字和链接 */
+  .post-detail-content {
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .post-detail-content a {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* 代码块限制在文章容器内部 */
+  .post-detail-content pre {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: pre;
+    overflow-wrap: normal;
+    word-break: normal;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 代码内容可以超出代码框，但不能撑大页面 */
+  .post-detail-content pre code {
+    display: block;
+    width: max-content;
+    min-width: 0;
+    max-width: none;
+    white-space: pre;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  /* 行内代码允许换行 */
+  .post-detail-content p code,
+  .post-detail-content li code {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  /* 图片、视频和嵌入内容 */
+  .post-detail-content img,
+  .post-detail-content video,
+  .post-detail-content iframe,
+  .post-detail-content svg {
+    max-width: 100%;
+  }
+
+  .post-detail-content img {
+    height: auto;
+  }
+
+  /* 表格只在自身区域内横向滚动 */
+  .post-detail-content table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* 文章底部导航 */
+  .post-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .post-nav-item {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .post-nav-item.next {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .post-nav-title {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* 避免长标题撑开布局 */
+  .post-detail-title,
+  .post-detail-header,
+  .breadcrumb {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
 }

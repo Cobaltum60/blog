@@ -277,7 +277,7 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; padding: 4px 12px; background: var(--primary-soft); color: var(--primary); border: 1px solid transparent; border-radius: var(--radius-sm); transition: all 0.2s; }
 .tag:hover { background: var(--primary); color: #fff; }
 
-/* 核心修复：强制文字换行（不用 important） */
+/* 核心修复：强制文字换行 */
 .post-detail-content { 
   font-size: 1.05rem; 
   line-height: 1.85; 
@@ -378,9 +378,6 @@ body.dark .post-detail-content pre {
 .comments-title i { color: var(--primary); }
 .comments-section iframe, .giscus, .giscus-frame { border-radius: var(--radius-md); box-shadow: none; width: 100%; }
 
-/* =========================================
-   响应式 (移动端终极防爆)
-========================================= */
 @media (max-width: 1100px) {
   .post-layout { grid-template-columns: 1fr; max-width: 760px; }
   .toc { display: none; }
@@ -391,7 +388,6 @@ body.dark .post-detail-content pre {
   .sidebar .side-block { flex: 1 1 240px; }
 }
 @media (max-width: 768px) {
-  /* 导航栏与主内容对齐 */
   .header-container { padding: 0.7rem 1rem; flex-direction: column; height: auto; }
   .site-nav { width: 100%; justify-content: center; }
   .site-main { padding: 1.4rem 1rem 2rem; }

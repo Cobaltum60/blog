@@ -41,11 +41,11 @@ body {
   flex-direction: column;
   line-height: 1.6;
   position: relative;
-  background-image: url('/images/background.jpg') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-attachment: fixed !important;
-  background-repeat: no-repeat !important;
+  background-image: url('/images/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   transition: background .3s, color .3s;
 }
 
@@ -265,7 +265,7 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .empty-state button:hover { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25); }
 
 /* =========================================
-   Post 详情页 (核心修复：防撑爆)
+   Post 详情页
 ========================================= */
 .post-layout { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 760px) 200px; gap: 1.2rem; align-items: start; min-width: 0; }
 .post-detail, .toc { padding: 2rem 2.5rem; min-width: 0; max-width: 100%; overflow: hidden; }
@@ -277,14 +277,14 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; padding: 4px 12px; background: var(--primary-soft); color: var(--primary); border: 1px solid transparent; border-radius: var(--radius-sm); transition: all 0.2s; }
 .tag:hover { background: var(--primary); color: #fff; }
 
-/* 核心修复：强制文字换行 */
+/* 核心修复：强制文字换行（不用 important） */
 .post-detail-content { 
   font-size: 1.05rem; 
   line-height: 1.85; 
   color: var(--text-dark); 
-  word-wrap: break-word !important; 
-  overflow-wrap: break-word !important; 
-  word-break: break-word !important; 
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word; 
   min-width: 0;
 }
 .post-detail-content h2, .post-detail-content h3 { color: var(--text-dark); border-bottom-color: var(--glass-border); }
@@ -295,17 +295,17 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 /* 终端风代码块 (红绿灯) */
 .post-detail-content pre {
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md) !important;
+  border-radius: var(--radius-md);
   padding: 44px 20px 20px; 
-  overflow-x: auto !important; /* 强制代码块自己内部滚动 */
-  max-width: 100% !important;
+  overflow-x: auto;
+  max-width: 100%;
   margin: 24px 0;
   position: relative;
-  background: #ffffff !important;
+  background: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 body.dark .post-detail-content pre {
-  background: #1e1e1e !important;
+  background: #1e1e1e;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   border-color: #333;
 }
@@ -335,7 +335,7 @@ body.dark .post-detail-content pre {
 }
 .post-detail-content code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
 .post-detail-content p code, .post-detail-content li code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--glass-border); color: var(--primary); border-radius: var(--radius-sm); }
-.post-detail-content pre code { background: none !important; padding: 0; border: none; color: inherit; }
+.post-detail-content pre code { background: none; padding: 0; border: none; color: inherit; }
 .post-detail-content img { max-width: 100%; border: 1px solid var(--glass-border); border-radius: var(--radius-md); margin: 8px 0; }
 
 .copy-code-btn { position: absolute; top: 8px; right: 8px; background: var(--glass-bg); color: var(--text-muted); border: 1px solid var(--glass-border); padding: 4px 10px; font-size: .72rem; font-family: ui-monospace, Menlo, monospace; cursor: pointer; opacity: 0; transition: opacity .2s, border-color .2s, color .2s; z-index: 2; border-radius: var(--radius-sm); }
@@ -376,7 +376,7 @@ body.dark .post-detail-content pre {
 .comments-section { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--glass-border); }
 .comments-title { font-size: 1.1rem; margin: 0 0 20px; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
 .comments-title i { color: var(--primary); }
-.comments-section iframe, .giscus, .giscus-frame { border-radius: var(--radius-md) !important; box-shadow: none !important; width: 100% !important; }
+.comments-section iframe, .giscus, .giscus-frame { border-radius: var(--radius-md); box-shadow: none; width: 100%; }
 
 /* =========================================
    响应式 (移动端终极防爆)
@@ -391,23 +391,24 @@ body.dark .post-detail-content pre {
   .sidebar .side-block { flex: 1 1 240px; }
 }
 @media (max-width: 768px) {
+  /* 导航栏与主内容对齐 */
   .header-container { padding: 0.7rem 1rem; flex-direction: column; height: auto; }
   .site-nav { width: 100%; justify-content: center; }
   .site-main { padding: 1.4rem 1rem 2rem; }
   
   /* 确保容器绝对不超出屏幕宽度 */
-  .post-detail, .toc { padding: 1.5rem 1.2rem; width: 100% !important; max-width: 100vw !important; }
+  .post-detail, .toc { padding: 1.5rem 1.2rem; width: 100%; max-width: 100vw; }
   .post-detail-title { font-size: 1.7rem; }
   
   /* 双重保险，强制所有长串文本打断换行 */
   .post-detail-content * {
-    max-width: 100vw !important; 
-    word-wrap: break-word !important; 
-    word-break: break-word !important;
+    max-width: 100vw; 
+    word-wrap: break-word; 
+    word-break: break-word;
   }
   .post-detail-content pre {
-    max-width: 100% !important;
-    overflow-x: auto !important;
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   .post-nav { grid-template-columns: 1fr; }

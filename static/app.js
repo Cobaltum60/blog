@@ -36,7 +36,12 @@ function setTheme(theme) {
   }
 }
 
-if (saved) { setTheme(saved); } else { setTheme('dark'); } // 默认深色
+// 初始化主题（默认深色）
+if (saved) { 
+  setTheme(saved); 
+} else { 
+  setTheme('dark'); 
+}
 
 if (toggleBtn) {
   toggleBtn.addEventListener('click', () => {
@@ -71,24 +76,27 @@ document.addEventListener('DOMContentLoaded', () => {
     pre.appendChild(btn);
   });
 
-  // 3. TOC 目录 + 进度条 + 锚点
+  // 3. TOC 目录 + 进度条
   const content = document.getElementById('post-content');
   const tocList = document.getElementById('toc-list');
   if (content && tocList) {
     const headings = content.querySelectorAll('h2, h3');
     if (headings.length > 0) {
       const usedIds = new Set();
+      
       headings.forEach((h, i) => {
         let id = h.id || 'heading-' + i;
         if (usedIds.has(id)) { id = id + '-' + i; }
         h.id = id;
         usedIds.add(id);
 
+        // 注：这里删除了生成 # 号锚点的代码，只保留目录生成
+
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.className = 'toc-link level-' + h.tagName[1];
         a.href = '#' + id;
-        a.textContent = h.textContent.replace('#', '').trim();
+        a.textContent = h.textContent.trim();
         li.appendChild(a);
         tocList.appendChild(li);
       });
@@ -121,20 +129,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4. Giscus 直接加载
+  // 4. Giscus 直接加载（输入框置顶）
   const container = document.getElementById('giscus-container');
   if (container) {
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
     script.setAttribute('data-repo', 'Cobaltum60/blog');
-    script.setAttribute('data-repo-id', 'R_kgDOVW3agQ');
+    script.setAttribute('data-repo-id', 'R_kgDOVW3agQ'); // 你的真实 ID
     script.setAttribute('data-category', 'General');
-    script.setAttribute('data-category-id', 'DIC_kwDOVW3agc4DJoYs');
+    script.setAttribute('data-category-id', 'DIC_kwDOVW3agc4DJoYs'); // 你的真实 ID
     script.setAttribute('data-mapping', 'pathname');
     script.setAttribute('data-strict', '0');
     script.setAttribute('data-reactions-enabled', '1');
     script.setAttribute('data-emit-metadata', '0');
-    script.setAttribute('data-input-position', 'top');
+    script.setAttribute('data-input-position', 'top'); // 输入框置顶
     script.setAttribute('data-theme', document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
     script.setAttribute('data-lang', 'zh-CN');
     script.setAttribute('crossorigin', 'anonymous');

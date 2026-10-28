@@ -195,7 +195,7 @@ a:hover { color: var(--primary-light); }
 .read-all:hover i { transform: translateX(3px); }
 
 /* =========================================
-   玻璃拟物卡片通用类 (给首页和详情页用)
+   玻璃拟物卡片通用类
 ========================================= */
 .glass-card, .side-block, .content-top, .list-item, .post-detail, .toc {
   background: var(--glass-bg);
@@ -228,6 +228,22 @@ a:hover { color: var(--primary-light); }
 }
 .author-name { font-weight: 600; color: var(--text-dark); font-size: 0.92rem; }
 .author-bio { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
+
+/* 侧边栏联系方式 */
+.contact-side { display: flex; flex-direction: column; gap: 0.6rem; }
+.contact-mail {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--text-muted);
+  text-decoration: none; word-break: break-all;
+  transition: var(--transition);
+}
+.contact-mail i { color: var(--primary); flex-shrink: 0; font-size: 0.75rem; }
+.contact-mail:hover { color: var(--primary); }
+.contact-note {
+  display: flex; gap: 0.4rem;
+  font-size: 0.72rem; color: var(--text-muted);
+  margin-top: 0.2rem; line-height: 1.4; opacity: 0.8;
+}
 
 .cat-nav { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
 .cat-nav button {
@@ -310,7 +326,7 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .empty-state button:hover { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25); }
 
 /* =========================================
-   Post 详情页 (TOC/代码块)
+   Post 详情页 (TOC/红绿灯代码块)
 ========================================= */
 .post-layout { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 760px) 200px; gap: 1.2rem; align-items: start; }
 .post-detail, .toc { padding: 2rem 2.5rem; }
@@ -327,10 +343,50 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .post-detail-content a { color: var(--primary); border-bottom: 1px solid var(--primary-soft); }
 .post-detail-content a:hover { border-bottom-color: var(--primary); }
 .post-detail-content blockquote { border-left: 4px solid var(--primary); background: var(--primary-soft); color: var(--text-muted); border-radius: var(--radius-sm); padding: 16px 20px; margin: 20px 0; }
-.post-detail-content pre { background: var(--code-bg) !important; border: 1px solid var(--glass-border); border-radius: var(--radius-md) !important; padding: 20px; overflow-x: auto; margin: 24px 0; position: relative; }
+
+/* 终端风代码块 (红绿灯) */
+.post-detail-content pre {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md) !important;
+  padding: 44px 20px 20px; 
+  overflow-x: auto;
+  margin: 24px 0;
+  position: relative;
+  background: #ffffff !important; /* 浅色模式：纯白底 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+body.dark .post-detail-content pre {
+  background: #1e1e1e !important; /* 深色模式：纯暗黑底 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: #333;
+}
+.post-detail-content pre::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f56;
+  box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+  z-index: 2;
+}
+.post-detail-content pre::after {
+  content: attr(data-lang);
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
 .post-detail-content code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
 .post-detail-content p code, .post-detail-content li code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--glass-border); color: var(--primary); border-radius: var(--radius-sm); }
-.post-detail-content pre code { background: none; padding: 0; border: none; color: inherit; }
+.post-detail-content pre code { background: none !important; padding: 0; border: none; color: inherit; }
 .post-detail-content img { max-width: 100%; border: 1px solid var(--glass-border); border-radius: var(--radius-md); margin: 8px 0; }
 
 .copy-code-btn { position: absolute; top: 8px; right: 8px; background: var(--glass-bg); color: var(--text-muted); border: 1px solid var(--glass-border); padding: 4px 10px; font-size: .72rem; font-family: ui-monospace, Menlo, monospace; cursor: pointer; opacity: 0; transition: opacity .2s, border-color .2s, color .2s; z-index: 2; border-radius: var(--radius-sm); }
@@ -416,20 +472,4 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
   .home-top h1 { font-size: 2rem; }
   .home-bottom { padding: 1.4rem 1.5rem; }
   .home-info { grid-template-columns: 1fr; gap: 1.2rem; }
-}
-
-/* --- 侧边栏联系方式 --- */
-.contact-side { display: flex; flex-direction: column; gap: 0.6rem; }
-.contact-mail {
-  display: flex; align-items: center; gap: 0.5rem;
-  font-size: 0.78rem; color: var(--text-muted);
-  text-decoration: none; word-break: break-all;
-  transition: var(--transition);
-}
-.contact-mail i { color: var(--primary); flex-shrink: 0; font-size: 0.75rem; }
-.contact-mail:hover { color: var(--primary); }
-.contact-note {
-  display: flex; gap: 0.4rem;
-  font-size: 0.72rem; color: var(--text-muted);
-  margin-top: 0.2rem; line-height: 1.4; opacity: 0.8;
 }

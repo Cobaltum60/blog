@@ -301,22 +301,25 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .post-detail-content blockquote { border-left: 4px solid var(--primary); background: var(--primary-soft); color: var(--text-muted); border-radius: var(--radius-sm); padding: 16px 20px; margin: 20px 0; }
 
 /* =========================================
-   终极代码块修复：红绿灯固定、横线、横向滑动
+   代码块终极修复
+   外框 pre 固定不动，红绿灯固定在 pre 上
+   只有 code 内部可以横向滑动
 ========================================= */
 .post-detail-content pre {
   position: relative;
   background: #ffffff;
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  padding: 40px 0 16px; /* 顶部留出40px给红绿灯和线 */
   margin: 24px 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  overflow-x: auto; /* 让 pre 自身可以横向滑动 */
-  /* FIX: 锁定宽度，防止内容撑破父容器导致页面横向溢出 */
+  /* 外框锁定宽度，绝不溢出屏幕 */
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
+  /* 外框不滚动，隐藏溢出（滚动交给内部 code） */
+  overflow: hidden;
+  /* 顶部留出空间给红绿灯和横线 */
+  padding: 40px 0 0 0;
 }
 body.dark .post-detail-content pre {
   background: #1e1e1e;
@@ -324,44 +327,54 @@ body.dark .post-detail-content pre {
   border-color: #333;
 }
 
-/* 利用 ::before 画红绿灯 */
+/* 红绿灯：固定在 pre 左上角，不随代码滚动 */
 .post-detail-content pre::before {
   content: "";
   position: absolute;
   top: 16px;
-  left: 20px; /* 固定在左侧 */
+  left: 20px;
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: #ff5f56;
   box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
   z-index: 10;
+  pointer-events: none;
 }
 
-/* 利用 ::after 画红绿灯下方的线 */
+/* 红绿灯下方的横线：固定在 pre 上，贯穿整个宽度 */
 .post-detail-content pre::after {
   content: "";
   position: absolute;
-  top: 40px; /* 刚好在红绿灯下方 */
+  top: 40px;
   left: 0;
   width: 100%;
   height: 1px;
   background-color: var(--glass-border);
   z-index: 5;
+  pointer-events: none;
 }
 body.dark .post-detail-content pre::after {
   background-color: #333;
 }
 
-/* 代码本体设置 */
+/* code 本体：作为滚动容器，只有它内部可以左右滑动 */
 .post-detail-content pre code {
   display: block;
-  min-width: max-content; /* 强制内容撑开触发滚动 */
-  padding: 0 20px; /* 左右留出呼吸感 */
+  /* 关键：code 负责横向滚动 */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* 宽度锁定在外框内 */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  /* 底部留白 */
+  padding: 16px 20px;
   font-family: ui-monospace, Menlo, Consolas, monospace;
   font-size: .9em;
   background: none;
-  white-space: pre; /* 强制不换行 */
+  /* 强制不换行，内容超出时在 code 内部滚动 */
+  white-space: pre;
 }
 .post-detail-content p code, .post-detail-content li code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--glass-border); color: var(--primary); border-radius: var(--radius-sm); }
 .post-detail-content img { max-width: 100%; border: 1px solid var(--glass-border); border-radius: var(--radius-md); margin: 8px 0; }

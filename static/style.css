@@ -33,6 +33,12 @@ body.dark, html.dark body {
   --code-bg: rgba(15, 23, 42, 0.4);
 }
 
+/* FIX: 根级锁定横向溢出，防止移动端导航栏/页脚右侧空缺 */
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   color: var(--text-dark);
@@ -47,6 +53,9 @@ body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   transition: background .3s, color .3s;
+  /* FIX: 防止 body 被宽内容撑开 */
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body::before {
@@ -114,6 +123,8 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--glass-shadow);
+  /* FIX: 防止 grid/flex 子项被内容撑爆 */
+  min-width: 0;
 }
 
 /* =========================================
@@ -301,7 +312,11 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
   margin: 24px 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow-x: auto; /* 让 pre 自身可以横向滑动 */
+  /* FIX: 锁定宽度，防止内容撑破父容器导致页面横向溢出 */
+  width: 100%;
   max-width: 100%;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
 }
 body.dark .post-detail-content pre {
   background: #1e1e1e;
@@ -437,7 +452,8 @@ body.dark .post-detail-content pre::after {
   .cat-nav button { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
   .contact-side { gap: 0.8rem; padding-bottom: 0.5rem; }
   
-  .post-detail { padding: 1.5rem 1.2rem; width: 100%; max-width: 100vw; }
+  /* FIX: 移动端改用 100% 替代 100vw，避免滚动条宽度导致横向溢出 */
+  .post-detail { padding: 1.5rem 1.2rem; width: 100%; max-width: 100%; }
   .post-detail-title { font-size: 1.7rem; }
   
   /* 移动端强制文字换行 */

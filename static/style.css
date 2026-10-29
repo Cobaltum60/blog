@@ -64,7 +64,9 @@ a { color: var(--primary); text-decoration: none; transition: color .2s; }
 a:hover { color: var(--primary-light); }
 h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
 
-/* 导航栏与页脚 */
+/* =========================================
+   导航栏与页脚
+========================================= */
 .site-header {
   position: sticky; top: 0; z-index: 100; width: 100%;
   background: var(--nav-bg);
@@ -103,7 +105,9 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
 .site-footer a:hover { text-decoration: underline; }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.6;} }
 
-/* 玻璃卡片通用 */
+/* =========================================
+   玻璃卡片通用
+========================================= */
 .glass-card, .side-block, .content-top, .list-item, .post-detail, .toc {
   background: var(--glass-bg);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -112,7 +116,9 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
   box-shadow: var(--glass-shadow);
 }
 
-/* 首页 (Home) */
+/* =========================================
+   首页 (Home)
+========================================= */
 .home-wrapper { width: 100%; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
 .home-top { padding: 2.4rem 2.6rem; }
 .home-top h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 0.7rem; }
@@ -161,7 +167,9 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
 .read-all i { transition: transform 0.2s ease; }
 .read-all:hover i { transform: translateX(3px); }
 
-/* Posts 列表页 */
+/* =========================================
+   Posts 列表页
+========================================= */
 .layout { display: grid; grid-template-columns: 260px 1fr; gap: 1.2rem; align-items: start; }
 .sidebar { display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 5rem; }
 .side-block { overflow: hidden; }
@@ -266,7 +274,7 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; padding: 4px 12px; background: var(--primary-soft); color: var(--primary); border: 1px solid transparent; border-radius: var(--radius-sm); transition: all 0.2s; }
 .tag:hover { background: var(--primary); color: #fff; }
 
-/* 强制文字换行 */
+/* 核心修复：强制文字换行 */
 .post-detail-content { 
   font-size: 1.05rem; 
   line-height: 1.85; 
@@ -281,17 +289,19 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .post-detail-content a:hover { border-bottom-color: var(--primary); }
 .post-detail-content blockquote { border-left: 4px solid var(--primary); background: var(--primary-soft); color: var(--text-muted); border-radius: var(--radius-sm); padding: 16px 20px; margin: 20px 0; }
 
-/* 代码块全新结构 (红绿灯 + 底线 + 不滑动) */
+/* =========================================
+   终极代码块修复：红绿灯固定、横线、横向滑动
+========================================= */
 .post-detail-content pre {
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  padding: 0;
-  overflow-x: auto;
-  max-width: 100%;
-  margin: 24px 0;
   position: relative;
   background: #ffffff;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 40px 0 16px; /* 顶部留出40px给红绿灯和线 */
+  margin: 24px 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; /* 让 pre 自身可以横向滑动 */
+  max-width: 100%;
 }
 body.dark .post-detail-content pre {
   background: #1e1e1e;
@@ -299,59 +309,65 @@ body.dark .post-detail-content pre {
   border-color: #333;
 }
 
-/* 动态插入的头部 */
-.code-header {
-  position: sticky;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 40px;
-  background: inherit;
-  border-bottom: 1px solid var(--glass-border); /* 红绿灯下面的线 */
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-}
-body.dark .code-header {
-  border-bottom-color: #333;
-}
-
-/* 红绿灯圆点 */
-.code-header::before {
+/* 利用 ::before 画红绿灯 */
+.post-detail-content pre::before {
   content: "";
+  position: absolute;
+  top: 16px;
+  left: 20px; /* 固定在左侧 */
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: #ff5f56;
   box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+  z-index: 10;
 }
 
-/* 语言标识 */
-.code-header::after {
-  content: attr(data-lang);
+/* 利用 ::after 画红绿灯下方的线 */
+.post-detail-content pre::after {
+  content: "";
   position: absolute;
-  right: 16px;
-  font-family: ui-monospace, Menlo, monospace;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  opacity: 0.6;
+  top: 40px; /* 刚好在红绿灯下方 */
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--glass-border);
+  z-index: 5;
+}
+body.dark .post-detail-content pre::after {
+  background-color: #333;
 }
 
-/* 代码内容 */
+/* 代码本体设置 */
 .post-detail-content pre code {
-  padding: 16px 20px;
   display: block;
-  min-width: max-content; /* 强制撑开宽度，触发横向滚动 */
+  min-width: max-content; /* 强制内容撑开触发滚动 */
+  padding: 0 20px; /* 左右留出呼吸感 */
   font-family: ui-monospace, Menlo, Consolas, monospace;
   font-size: .9em;
   background: none;
+  white-space: pre; /* 强制不换行 */
 }
 .post-detail-content p code, .post-detail-content li code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--glass-border); color: var(--primary); border-radius: var(--radius-sm); }
 .post-detail-content img { max-width: 100%; border: 1px solid var(--glass-border); border-radius: var(--radius-md); margin: 8px 0; }
 
-.copy-code-btn { position: absolute; top: 8px; right: 8px; background: var(--glass-bg); color: var(--text-muted); border: 1px solid var(--glass-border); padding: 4px 10px; font-size: .72rem; font-family: ui-monospace, Menlo, monospace; cursor: pointer; opacity: 0; transition: opacity .2s, border-color .2s, color .2s; z-index: 15; border-radius: var(--radius-sm); }
+/* 复制按钮放右上角 */
+.copy-code-btn { 
+  position: absolute; 
+  top: 8px; 
+  right: 12px; 
+  background: var(--glass-bg); 
+  color: var(--text-muted); 
+  border: 1px solid var(--glass-border); 
+  padding: 4px 10px; 
+  font-size: .72rem; 
+  font-family: ui-monospace, Menlo, monospace; 
+  cursor: pointer; 
+  opacity: 0; 
+  transition: opacity .2s, border-color .2s, color .2s; 
+  z-index: 15; 
+  border-radius: var(--radius-sm); 
+}
 .post-detail-content pre:hover .copy-code-btn { opacity: 1; }
 .copy-code-btn:hover { border-color: var(--primary); color: var(--primary); }
 .copy-code-btn.copied { color: var(--primary); border-color: var(--primary); }
@@ -391,7 +407,9 @@ body.dark .code-header {
 .comments-title i { color: var(--primary); }
 .comments-section iframe, .giscus, .giscus-frame { border-radius: var(--radius-md); box-shadow: none; width: 100%; }
 
-/*响应式 (移动端终极防爆与修复)*/
+/* =========================================
+   响应式 (移动端终极防爆与修复)
+========================================= */
 @media (max-width: 1100px) {
   .post-layout { grid-template-columns: 1fr; max-width: 760px; }
   .toc { display: none; }

@@ -146,14 +146,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-  // ===== 页面切换彩蛋 =====
-    const originalTitle = document.title;
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-    // 切走时
-    document.title = '网站崩溃了 (╯°□°）╯︵ ┻━┻';
-      } else {
-    // 切回来时恢复
+// ===== 页面切换彩蛋（防摸鱼） =====
+const originalTitle = document.title;
+let titleTimer; // 用于清除定时器
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    titleTimer = setTimeout(() => {
+      document.title = '网站崩溃了 (╯°□°）╯︵ ┻━┻';
+    }, 5000);
+  } else {
+    clearTimeout(titleTimer);
     document.title = originalTitle;
   }
 });

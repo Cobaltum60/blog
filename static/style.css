@@ -41,7 +41,6 @@ body {
   flex-direction: column;
   line-height: 1.6;
   position: relative;
-  isolation: isolate;
   background-image: url('/images/background.jpg');
   background-size: cover;
   background-position: center;
@@ -63,12 +62,9 @@ body.dark::before { background: rgba(5, 10, 20, 0.45); }
 
 a { color: var(--primary); text-decoration: none; transition: color .2s; }
 a:hover { color: var(--primary-light); }
-
 h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
 
-/* =========================================
-   导航栏与页脚
-========================================= */
+/* 导航栏与页脚 */
 .site-header {
   position: sticky; top: 0; z-index: 100; width: 100%;
   background: var(--nav-bg);
@@ -107,9 +103,7 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
 .site-footer a:hover { text-decoration: underline; }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.6;} }
 
-/* =========================================
-   玻璃卡片通用
-========================================= */
+/* 玻璃卡片通用 */
 .glass-card, .side-block, .content-top, .list-item, .post-detail, .toc {
   background: var(--glass-bg);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -118,9 +112,7 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
   box-shadow: var(--glass-shadow);
 }
 
-/* =========================================
-   首页 (Home)
-========================================= */
+/* 首页 (Home) */
 .home-wrapper { width: 100%; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
 .home-top { padding: 2.4rem 2.6rem; }
 .home-top h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 0.7rem; }
@@ -169,9 +161,7 @@ h1, h2, h3, h4 { line-height: 1.4; font-weight: 700; color: var(--text-dark); }
 .read-all i { transition: transform 0.2s ease; }
 .read-all:hover i { transform: translateX(3px); }
 
-/* =========================================
-   Posts 列表页
-========================================= */
+/* Posts 列表页 */
 .layout { display: grid; grid-template-columns: 260px 1fr; gap: 1.2rem; align-items: start; }
 .sidebar { display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 5rem; }
 .side-block { overflow: hidden; }
@@ -265,9 +255,7 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .empty-state button { border: 1px solid var(--primary); background: transparent; color: var(--primary); border-radius: var(--radius-sm); padding: 0.5rem 1.2rem; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: var(--transition); }
 .empty-state button:hover { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25); }
 
-/* =========================================
-   Post 详情页
-========================================= */
+/* Post 详情页 */
 .post-layout { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 760px) 200px; gap: 1.2rem; align-items: start; min-width: 0; }
 .post-detail, .toc { padding: 2rem 2.5rem; min-width: 0; max-width: 100%; overflow: hidden; }
 .post-detail-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--glass-border); }
@@ -278,14 +266,14 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; padding: 4px 12px; background: var(--primary-soft); color: var(--primary); border: 1px solid transparent; border-radius: var(--radius-sm); transition: all 0.2s; }
 .tag:hover { background: var(--primary); color: #fff; }
 
-/* 核心修复：强制文字换行 */
-.post-detail-content {
-  font-size: 1.05rem;
-  line-height: 1.85;
-  color: var(--text-dark);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: break-word;
+/* 强制文字换行 */
+.post-detail-content { 
+  font-size: 1.05rem; 
+  line-height: 1.85; 
+  color: var(--text-dark); 
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word; 
   min-width: 0;
 }
 .post-detail-content h2, .post-detail-content h3 { color: var(--text-dark); border-bottom-color: var(--glass-border); }
@@ -293,11 +281,11 @@ mark.hl { background: var(--primary-soft); color: var(--primary); border-radius:
 .post-detail-content a:hover { border-bottom-color: var(--primary); }
 .post-detail-content blockquote { border-left: 4px solid var(--primary); background: var(--primary-soft); color: var(--text-muted); border-radius: var(--radius-sm); padding: 16px 20px; margin: 20px 0; }
 
-/* 终端风代码块 (红绿灯) */
+/* 代码块全新结构 (红绿灯 + 底线 + 不滑动) */
 .post-detail-content pre {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  padding: 44px 20px 20px;
+  padding: 0;
   overflow-x: auto;
   max-width: 100%;
   margin: 24px 0;
@@ -310,37 +298,60 @@ body.dark .post-detail-content pre {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   border-color: #333;
 }
-.post-detail-content pre::before {
+
+/* 动态插入的头部 */
+.code-header {
+  position: sticky;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 40px;
+  background: inherit;
+  border-bottom: 1px solid var(--glass-border); /* 红绿灯下面的线 */
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+body.dark .code-header {
+  border-bottom-color: #333;
+}
+
+/* 红绿灯圆点 */
+.code-header::before {
   content: "";
-  position: absolute;
-  top: 16px;
-  left: 16px;
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: #ff5f56;
   box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
-  z-index: 2;
 }
-.post-detail-content pre::after {
+
+/* 语言标识 */
+.code-header::after {
   content: attr(data-lang);
   position: absolute;
-  top: 14px;
   right: 16px;
   font-family: ui-monospace, Menlo, monospace;
   font-size: 0.7rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
   opacity: 0.6;
-  padding-right: 64px; /* 给复制按钮让位，避免悬停时重叠 */
 }
-.post-detail-content code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9em; }
+
+/* 代码内容 */
+.post-detail-content pre code {
+  padding: 16px 20px;
+  display: block;
+  min-width: max-content; /* 强制撑开宽度，触发横向滚动 */
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: .9em;
+  background: none;
+}
 .post-detail-content p code, .post-detail-content li code { background: var(--code-bg); padding: 2px 6px; border: 1px solid var(--glass-border); color: var(--primary); border-radius: var(--radius-sm); }
-.post-detail-content pre code { background: none; padding: 0; border: none; color: inherit; }
 .post-detail-content img { max-width: 100%; border: 1px solid var(--glass-border); border-radius: var(--radius-md); margin: 8px 0; }
 
-.copy-code-btn { position: absolute; top: 8px; right: 8px; background: var(--glass-bg); color: var(--text-muted); border: 1px solid var(--glass-border); padding: 4px 10px; font-size: .72rem; font-family: ui-monospace, Menlo, monospace; cursor: pointer; opacity: 0; transition: opacity .2s, border-color .2s, color .2s; z-index: 2; border-radius: var(--radius-sm); }
+.copy-code-btn { position: absolute; top: 8px; right: 8px; background: var(--glass-bg); color: var(--text-muted); border: 1px solid var(--glass-border); padding: 4px 10px; font-size: .72rem; font-family: ui-monospace, Menlo, monospace; cursor: pointer; opacity: 0; transition: opacity .2s, border-color .2s, color .2s; z-index: 15; border-radius: var(--radius-sm); }
 .post-detail-content pre:hover .copy-code-btn { opacity: 1; }
 .copy-code-btn:hover { border-color: var(--primary); color: var(--primary); }
 .copy-code-btn.copied { color: var(--primary); border-color: var(--primary); }
@@ -380,27 +391,43 @@ body.dark .post-detail-content pre {
 .comments-title i { color: var(--primary); }
 .comments-section iframe, .giscus, .giscus-frame { border-radius: var(--radius-md); box-shadow: none; width: 100%; }
 
+/*响应式 (移动端终极防爆与修复)*/
 @media (max-width: 1100px) {
   .post-layout { grid-template-columns: 1fr; max-width: 760px; }
   .toc { display: none; }
 }
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; flex-direction: row; flex-wrap: wrap; }
-  .sidebar .side-block { flex: 1 1 240px; }
+  .sidebar { position: static; }
 }
 @media (max-width: 768px) {
-  .post-detail, .toc { padding: 1.5rem 1.2rem; width: 100%; max-width: 100vw; }
-  .post-detail-title { font-size: 1.7rem; }
-
-  .post-detail-content * {
-    max-width: 100vw;
-    word-wrap: break-word;
-    word-break: break-word;
+  .header-container { padding: 0.7rem 1rem; flex-direction: column; height: auto; }
+  .site-nav { width: 100%; justify-content: center; }
+  .site-main { padding: 1.4rem 1rem 2rem; }
+  
+  /* 修复 1：侧边栏卡片自适应高度，不挤压 */
+  .sidebar { 
+    flex-direction: column; 
+    gap: 1rem; 
   }
-  .post-detail-content pre {
-    max-width: 100%;
-    overflow-x: auto;
+  .side-block { 
+    flex: none; 
+    width: 100%;
+    height: auto; 
+  }
+  .author-mini { margin-bottom: 0.2rem; }
+  .cat-nav button { padding: 0.6rem 0.8rem; font-size: 0.88rem; }
+  .contact-side { gap: 0.8rem; padding-bottom: 0.5rem; }
+  
+  .post-detail { padding: 1.5rem 1.2rem; width: 100%; max-width: 100vw; }
+  .post-detail-title { font-size: 1.7rem; }
+  
+  /* 移动端强制文字换行 */
+  .post-detail-content p, 
+  .post-detail-content li {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .post-nav { grid-template-columns: 1fr; }
@@ -413,158 +440,4 @@ body.dark .post-detail-content pre {
   .home-top { padding: 1.9rem 1.5rem; }
   .home-top h1 { font-size: 2rem; }
   .home-bottom { padding: 1.4rem 1.5rem; }
-}
-
-/* =========================================
-   移动端布局修复
-   修复代码块撑宽页面、导航栏异常间隙
-========================================= */
-@media (max-width: 768px) {
-  html,
-  body {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;  /* 旧浏览器兜底 */
-    overflow-x: clip;    /* 现代浏览器：不建立滚动容器，不破坏 sticky */
-  }
-
-  /* 防止导航栏和主内容被页面最小宽度撑开 */
-  .site-header,
-  .header-container,
-  .site-nav,
-  .site-main,
-  .main-container,
-  .post-layout,
-  .post-detail,
-  .post-detail-content {
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  .header-container {
-    width: 100%;
-  }
-
-  .site-nav {
-    width: 100%;
-    min-width: 0;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .site-main {
-    width: 100%;
-  }
-
-  /* Grid 列必须允许收缩 */
-  .post-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    width: 100%;
-    gap: 1rem;
-  }
-
-  .post-detail {
-    width: 100%;
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  /* 正文中的普通文字和链接 */
-  .post-detail-content {
-    width: 100%;
-    min-width: 0;
-    overflow-wrap: anywhere;
-    word-break: normal;
-  }
-
-  .post-detail-content a {
-    overflow-wrap: anywhere;
-    word-break: normal;
-  }
-
-  /* 代码块限制在文章容器内部 */
-  .post-detail-content pre {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: pre;
-    overflow-wrap: normal;
-    word-break: normal;
-    overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* 代码内容可以超出代码框，但不能撑大页面 */
-  .post-detail-content pre code {
-    display: block;
-    width: max-content;
-    min-width: 0;
-    max-width: none;
-    white-space: pre;
-    overflow-wrap: normal;
-    word-break: normal;
-  }
-
-  /* 行内代码允许换行 */
-  .post-detail-content p code,
-  .post-detail-content li code {
-    overflow-wrap: anywhere;
-    word-break: normal;
-  }
-
-  /* 图片、视频和嵌入内容 */
-  .post-detail-content img,
-  .post-detail-content video,
-  .post-detail-content iframe,
-  .post-detail-content svg {
-    max-width: 100%;
-  }
-
-  .post-detail-content img {
-    height: auto;
-  }
-
-  /* 表格只在自身区域内横向滚动 */
-  .post-detail-content table {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-  }
-
-  /* 文章底部导航 */
-  .post-nav {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .post-nav-item {
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  .post-nav-item.next {
-    text-align: left;
-    align-items: flex-start;
-  }
-
-  .post-nav-title {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* 避免长标题撑开布局 */
-  .post-detail-title,
-  .post-detail-header,
-  .breadcrumb {
-    min-width: 0;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-  }
 }

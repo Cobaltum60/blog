@@ -55,8 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. 代码高亮
   if (window.hljs) hljs.highlightAll();
 
-  // 2. 代码复制按钮
+  // 2. 代码块头部（红绿灯+底线）与复制按钮
   document.querySelectorAll('.post-detail-content pre').forEach(pre => {
+    // 插入头部线框
+    const header = document.createElement('div');
+    header.className = 'code-header';
+    header.setAttribute('data-lang', pre.getAttribute('data-lang') || 'text'); // 将原本 pre 上的语言标识转到 header
+    pre.insertBefore(header, pre.firstChild);
+
+    // 插入复制按钮
     const btn = document.createElement('button');
     btn.className = 'copy-code-btn';
     btn.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
@@ -111,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tocLinks.forEach((link, i) => link.classList.toggle('active', i === activeIndex));
         
         if (bar) {
-          // 【核心修改】只计算正文部分到底部的距离，不包含评论区
+          // 进度条只计算正文部分，不包含评论区
           const targetHeight = content.offsetTop + content.offsetHeight;
           const docHeight = targetHeight - window.innerHeight;
           

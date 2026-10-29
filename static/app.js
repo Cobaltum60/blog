@@ -45,13 +45,47 @@ if (toggleBtn) {
 document.addEventListener('DOMContentLoaded', () => {
   if (window.hljs) hljs.highlightAll();
 
-  // 代码复制按钮
+  // 语言名称映射字典
+  const langMap = {
+    'c': 'C',
+    'cpp': 'C++',
+    'cs': 'C#',
+    'js': 'JavaScript',
+    'javascript': 'JavaScript',
+    'py': 'Python',
+    'python': 'Python',
+    'html': 'HTML',
+    'css': 'CSS',
+    'json': 'JSON',
+    'bash': 'Bash',
+    'shell': 'Shell',
+    'sh': 'Shell',
+    'sql': 'SQL',
+    'md': 'Markdown',
+    'markdown': 'Markdown',
+    'text': 'Text',
+    'plaintext': 'Text'
+  };
+
+  // 代码复制按钮 & 语言标识渲染
   document.querySelectorAll('.post-detail-content pre').forEach(pre => {
+    const code = pre.querySelector('code');
+    
+    // 提取语言类名并映射为大写标准名
+    if (code && code.className) {
+      const match = code.className.match(/language-(\w+)/);
+      if (match && match[1]) {
+        const rawLang = match[1].toLowerCase();
+        // 如果字典里有就取字典的，没有就原样大写
+        const displayLang = langMap[rawLang] || rawLang.toUpperCase();
+        pre.setAttribute('data-lang', displayLang);
+      }
+    }
+
     const btn = document.createElement('button');
     btn.className = 'copy-code-btn';
     btn.innerHTML = '<i class="fa-regular fa-copy"></i> 复制';
     btn.addEventListener('click', async () => {
-      const code = pre.querySelector('code');
       const text = code ? code.innerText : pre.innerText;
       try {
         await navigator.clipboard.writeText(text);

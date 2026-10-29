@@ -71,14 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.post-detail-content pre').forEach(pre => {
     const code = pre.querySelector('code');
     
-    // 提取语言类名并映射为大写标准名
-    if (code && code.className) {
+       if (code && code.className) {
       const match = code.className.match(/language-(\w+)/);
       if (match && match[1]) {
-        const rawLang = match[1].toLowerCase();
-        // 如果字典里有就取字典的，没有就原样大写
-        const displayLang = langMap[rawLang] || rawLang.toUpperCase();
-        pre.setAttribute('data-lang', displayLang);
+        pre.setAttribute('data-lang', match[1].toLowerCase());
       }
     }
 

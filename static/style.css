@@ -488,3 +488,91 @@ body.dark .post-detail-content pre::after {
   .home-top h1 { font-size: 2rem; }
   .home-bottom { padding: 1.4rem 1.5rem; }
 }
+
+/* ===== 移动端宽度修复 ===== */
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.site-header,
+.site-main,
+.site-footer {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.header-container,
+.main-container,
+.post-layout,
+.post-detail,
+.post-detail-content {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    width: 100%;
+    margin: 0;
+  }
+
+  .header-container {
+    width: 100%;
+    padding: 0.7rem 1rem;
+  }
+
+  .site-main {
+    padding: 1rem;
+  }
+
+  .post-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    gap: 1rem;
+  }
+
+  .post-detail {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: 1.5rem 1.2rem;
+  }
+
+  .post-detail-content {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .post-detail-content pre {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .post-detail-content pre code {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: pre;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+  }
+}

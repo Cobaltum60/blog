@@ -146,6 +146,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+  // ===== 页面切换彩蛋 =====
+    const originalTitle = document.title;
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+    // 切走时
+    document.title = '网站崩溃了 (╯°□°）╯︵ ┻━┻';
+      } else {
+    // 切回来时恢复
+    document.title = originalTitle;
+  }
+});
 
   // Giscus
   const container = document.getElementById('giscus-container');

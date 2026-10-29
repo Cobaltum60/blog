@@ -335,20 +335,20 @@ body.dark .post-detail-content pre {
   pointer-events: none;
 }
 
-/* 语言标识：红绿灯右侧，一直显示 */
 .post-detail-content pre::after {
   content: attr(data-lang);
   position: absolute;
-  top: 14px;
+  top: 13px; 
   left: 85px;
   font-family: ui-monospace, Menlo, monospace;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
+  font-weight: 600; 
   text-transform: uppercase;
   letter-spacing: 0.05em;
   z-index: 10;
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.9; 
 }
 
 /* 代码内容与横线 */

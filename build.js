@@ -133,10 +133,12 @@ for (let i = 0; i < posts.length; i++) {
 }
 
 // 4. 生成文章列表页
-const listHtml = posts.map((p) => {
+const listHtml = posts.map((p, index) => {
   const dateStr = p.date ? p.date.replace(/-/g, ' / ') : '';
+  // 关键：初始生成时，超过 5 篇的直接隐藏
+  const hiddenClass = index >= 5 ? ' hidden' : '';
   return `
-  <article class="list-item"
+  <article class="list-item${hiddenClass}"
            data-title="${p.title}"
            data-summary="${p.summary}"
            data-category="${p.cat}"
@@ -167,6 +169,7 @@ const postsScript = `
     { key: '其他', icon: 'fa-ellipsis' }
   ];
   const ALL = '全部';
+  const POSTS_PER_PAGE = 5; 
   const listEl = document.getElementById('article-list');
   if (!listEl) return; 
 
@@ -181,7 +184,15 @@ const postsScript = `
   const resetLink = document.getElementById('reset-link');
   const sortSelect = document.getElementById('sort-select');
   const suggestEl = document.getElementById('search-suggest');
+  
+  const paginationEl = document.getElementById('pagination');
+  const prevBtn = document.getElementById('prev-page');
+  const nextBtn = document.getElementById('next-page');
+  const pageInfoEl = document.getElementById('page-info');
+
   let activeCategory = ALL, keyword = '', sortMode = 'date-desc', suggestIndex = -1;
+  let currentPage = 1;
+  let filteredItems = [];
 
   function counts() {
     const map = { [ALL]: items.length };
@@ -245,70 +256,87 @@ const postsScript = `
     });
     return sorted;
   }
-  function applyFilter() {
+
+  function applyFilterAndPaginate() {
     const tokens = tokenize(keyword);
-    const results = [];
+    
+    // 先把所有节点隐藏，解决刚才的 bug
+    items.forEach(item => item.el.classList.add('hidden'));
+
+    filteredItems = [];
     items.forEach(item => {
       const catOK = activeCategory === ALL || item.category === activeCategory;
-      if (!catOK) { item.el.classList.add('hidden'); return; }
-      const score = scoreItem(item, tokens);
-      if (score > 0) { results.push({ item, score }); item.el.classList.remove('hidden'); } 
-      else { item.el.classList.add('hidden'); }
+      if (catOK) {
+        const score = scoreItem(item, tokens);
+        if (score > 0) {
+          filteredItems.push({ item, score });
+        }
+      }
     });
+
     if (tokens.length > 0) {
-      results.sort((a, b) => b.score - a.score);
-      results.forEach(({ item }) => listEl.appendChild(item.el));
+      filteredItems.sort((a, b) => b.score - a.score);
     } else {
-      const ordered = sortItems(items);
-      ordered.forEach(item => listEl.appendChild(item.el));
+      const sorted = sortItems(filteredItems.map(x => x.item));
+      filteredItems = sorted.map(item => ({ item, score: 1 }));
     }
-    items.forEach(item => {
+
+    const totalPages = Math.ceil(filteredItems.length / POSTS_PER_PAGE) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    const endIndex = startIndex + POSTS_PER_PAGE;
+
+    filteredItems.slice(startIndex, endIndex).forEach(({ item }) => {
+      item.el.classList.remove('hidden');
+      listEl.appendChild(item.el);
+      
       const t = item.el.querySelector('.list-title a');
       const s = item.el.querySelector('.list-summary');
       t.innerHTML = highlight(item.title, tokens);
       s.innerHTML = highlight(item.summary, tokens);
     });
-    const visible = results.length;
-    const totalToShow = tokens.length > 0 ? visible : items.filter(it => activeCategory === ALL || it.category === activeCategory).length;
+
+    const visibleCount = filteredItems.length;
+    emptyEl.classList.toggle('visible', visibleCount === 0);
     
-    emptyEl.classList.toggle('visible', totalToShow === 0);
+    if (visibleCount > POSTS_PER_PAGE) {
+      paginationEl.style.display = 'flex';
+      pageInfoEl.textContent = \`第 \${currentPage} 页 / 共 \${totalPages} 页\`;
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+    } else {
+      paginationEl.style.display = 'none';
+    }
+
     resetLink.style.display = (activeCategory !== ALL || tokens.length) ? 'inline-flex' : 'none';
-    let html = \`<span>共 \${totalToShow} 篇文章</span>\`;
+    let html = \`<span>共 \${visibleCount} 篇文章</span>\`;
     if (activeCategory !== ALL) html += \`<span class="result-chip">\${activeCategory}</span>\`;
     if (tokens.length) html += \`<span class="result-chip"><i class="fa-solid fa-magnifying-glass" style="font-size:.65rem"></i>\${keyword.trim()}</span>\`;
     infoEl.innerHTML = html;
     clearBtn.classList.toggle('visible', keyword.length > 0);
   }
-  function renderSuggest() {
-    const kw = keyword.trim().toLowerCase();
-    if (!kw) { suggestEl.classList.remove('visible'); suggestEl.innerHTML = ''; suggestIndex = -1; return; }
-    const tokens = tokenize(keyword);
-    const candidates = items.map(it => ({ it, score: scoreItem(it, tokens) })).filter(x => x.score > 0 && x.it.title.toLowerCase().includes(tokens[0])).sort((a, b) => b.score - a.score).slice(0, 5);
-    if (candidates.length === 0) { suggestEl.innerHTML = \`<div class="suggest-item" style="justify-content:center;color:var(--text-muted);cursor:default;">没有匹配的文章</div>\`; suggestEl.classList.add('visible'); suggestIndex = -1; return; }
-    suggestEl.innerHTML = candidates.map(({ it }) => \`<div class="suggest-item" data-index="\${items.indexOf(it)}" role="option"><i class="fa-solid fa-file-lines"></i><span class="suggest-text">\${highlight(it.title, tokens)}</span><span class="suggest-cat">\${it.category}</span></div>\`).join('');
-    suggestEl.classList.add('visible');
-    suggestIndex = -1;
-  }
-  function hideSuggest() { suggestEl.classList.remove('visible'); suggestIndex = -1; }
-  function resetAll() { keyword = ''; input.value = ''; activeCategory = ALL; hideSuggest(); renderNav(); applyFilter(); }
-  
-  navEl.addEventListener('click', e => {
-    const btn = e.target.closest('button[data-category]');
-    if (!btn || btn.disabled) return;
-    activeCategory = btn.dataset.category;
-    renderNav(); applyFilter();
+
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) { currentPage--; applyFilterAndPaginate(); window.scrollTo({top: 0, behavior: 'smooth'}); }
   });
+  nextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(filteredItems.length / POSTS_PER_PAGE) || 1;
+    if (currentPage < totalPages) { currentPage++; applyFilterAndPaginate(); window.scrollTo({top: 0, behavior: 'smooth'}); }
+  });
+
   let timer;
   input.addEventListener('input', e => {
     keyword = e.target.value;
     clearTimeout(timer);
-    timer = setTimeout(() => { applyFilter(); renderSuggest(); }, 120);
+    timer = setTimeout(() => { currentPage = 1; applyFilterAndPaginate(); renderSuggest(); }, 120);
   });
+  
   input.addEventListener('focus', () => { if (keyword.trim()) renderSuggest(); });
   input.addEventListener('keydown', e => {
     const suggestItems = suggestEl.querySelectorAll('.suggest-item[data-index]');
     if (!suggestEl.classList.contains('visible') || suggestItems.length === 0) {
-      if (e.key === 'Escape') { keyword = ''; input.value = ''; applyFilter(); hideSuggest(); }
+      if (e.key === 'Escape') { keyword = ''; input.value = ''; currentPage = 1; applyFilterAndPaginate(); hideSuggest(); }
       return;
     }
     if (e.key === 'ArrowDown') { e.preventDefault(); suggestIndex = (suggestIndex + 1) % suggestItems.length; }
@@ -319,6 +347,7 @@ const postsScript = `
     suggestItems.forEach((el, i) => el.classList.toggle('active', i === suggestIndex));
     if (suggestIndex >= 0) suggestItems[suggestIndex].scrollIntoView({ block: 'nearest' });
   });
+  
   suggestEl.addEventListener('click', e => {
     const item = e.target.closest('.suggest-item[data-index]');
     if (!item) return;
@@ -326,8 +355,31 @@ const postsScript = `
     const target = items[idx];
     if (target) window.location.href = target.el.querySelector('.list-title a').href;
   });
-  clearBtn.addEventListener('click', () => { keyword = ''; input.value = ''; hideSuggest(); input.focus(); applyFilter(); });
-  sortSelect.addEventListener('change', e => { sortMode = e.target.value; applyFilter(); });
+  
+  function hideSuggest() { suggestEl.classList.remove('visible'); suggestIndex = -1; }
+  function renderSuggest() {
+    const kw = keyword.trim().toLowerCase();
+    if (!kw) { suggestEl.classList.remove('visible'); suggestEl.innerHTML = ''; suggestIndex = -1; return; }
+    const tokens = tokenize(keyword);
+    const candidates = items.map(it => ({ it, score: scoreItem(it, tokens) })).filter(x => x.score > 0 && x.it.title.toLowerCase().includes(tokens[0])).sort((a, b) => b.score - a.score).slice(0, 5);
+    if (candidates.length === 0) { suggestEl.innerHTML = \`<div class="suggest-item" style="justify-content:center;color:var(--text-muted);cursor:default;">没有匹配的文章</div>\`; suggestEl.classList.add('visible'); suggestIndex = -1; return; }
+    suggestEl.innerHTML = candidates.map(({ it }) => \`<div class="suggest-item" data-index="\${items.indexOf(it)}" role="option"><i class="fa-solid fa-file-lines"></i><span class="suggest-text">\${highlight(it.title, tokens)}</span><span class="suggest-cat">\${it.category}</span></div>\`).join('');
+    suggestEl.classList.add('visible');
+    suggestIndex = -1;
+  }
+  
+  function resetAll() { keyword = ''; input.value = ''; activeCategory = ALL; currentPage = 1; hideSuggest(); renderNav(); applyFilterAndPaginate(); }
+
+  navEl.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-category]');
+    if (!btn || btn.disabled) return;
+    activeCategory = btn.dataset.category;
+    currentPage = 1;
+    renderNav(); applyFilterAndPaginate();
+  });
+  
+  clearBtn.addEventListener('click', () => { keyword = ''; input.value = ''; currentPage = 1; hideSuggest(); input.focus(); applyFilterAndPaginate(); });
+  sortSelect.addEventListener('change', e => { sortMode = e.target.value; currentPage = 1; applyFilterAndPaginate(); });
   resetLink.addEventListener('click', resetAll);
   document.getElementById('empty-reset').addEventListener('click', resetAll);
   document.addEventListener('click', e => { if (!e.target.closest('.search-bar')) hideSuggest(); });
@@ -335,7 +387,9 @@ const postsScript = `
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); input.focus(); input.select(); }
     else if (e.key === '/' && document.activeElement !== input && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) { e.preventDefault(); input.focus(); }
   });
-  renderNav(); applyFilter();
+  
+  renderNav(); 
+  applyFilterAndPaginate();
 })();
 </script>
 `;
@@ -421,6 +475,13 @@ const postsListBody = `
 
       <div class="article-list" id="article-list">
         ${listHtml}
+      </div>
+
+      <!-- 分页按钮 -->
+      <div class="pagination" id="pagination">
+        <button id="prev-page" class="page-btn" disabled><i class="fa-solid fa-chevron-left"></i> 上一页</button>
+        <span id="page-info" class="page-info">第 1 页 / 共 1 页</span>
+        <button id="next-page" class="page-btn" disabled>下一页 <i class="fa-solid fa-chevron-right"></i></button>
       </div>
 
       <div class="empty-state" id="empty-state">

@@ -550,3 +550,65 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/*分页系统 (Pagination)*/
+.pagination {
+  display: none; /* 默认隐藏，由 JS 控制显示 */
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: transparent;
+  color: var(--text-dark);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 0.85rem;
+  font-family: ui-monospace, Menlo, monospace;
+  color: var(--text-muted);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .pagination {
+    gap: 8px; 
+    padding: 12px;
+    margin-top: 24px;
+  }
+  .page-btn {
+    padding: 6px 12px; 
+    font-size: 0.8rem;
+  }
+  .page-info {
+    font-size: 0.8rem;
+  }
+}

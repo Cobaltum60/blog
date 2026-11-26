@@ -37,7 +37,7 @@ function copyDir(src, dest) {
   }
 }
 
-const FIXED_CATS = ['随笔', '生活', '编程', '其他'];
+const FIXED_CATS = ['随笔', '生活', '编程', '游戏', '其他'];
 
 const posts = fs.readdirSync(POSTS_DIR)
   .filter((f) => f.endsWith('.md'))
@@ -166,6 +166,7 @@ const postsScript = `
     { key: '随笔', icon: 'fa-feather' },
     { key: '生活', icon: 'fa-mug-hot' },
     { key: '编程', icon: 'fa-code' },
+    { key: '游戏', icon: 'fa-gamepad' },
     { key: '其他', icon: 'fa-ellipsis' }
   ];
   const ALL = '全部';
